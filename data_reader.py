@@ -24,14 +24,16 @@ def extract_data(path):
                 result = camera < val
                 images.append(result)
                 labels.append(int(filename.split('_')[0][3:], 16))
-    return numpy.array(images), dense_to_one_hot(numpy.array(labels, dtype=numpy.uint8), 8877)
+    return numpy.array(images), dense_to_one_hot(numpy.array(labels, dtype=numpy.uint8))
 
-def dense_to_one_hot(labels_dense, num_classes):
+def dense_to_one_hot(labels_dense):
     unique_labels = list(set(labels_dense))
+    num_classes = len(unique_labels)
     num_labels = labels_dense.shape[0]
     index_offset = numpy.arange(num_labels) * num_classes
     labels_one_hot = numpy.zeros((num_labels, num_classes))
-    labels_one_hot.flat[index_offset + unique_labels.index(labels_dense.ravel())] = 1
+    labels_one_hot.flat[index_offset + labels_dense.ravel()] = 1
+    print(num_classes)
     return labels_one_hot
 
 class DataSet(object):
