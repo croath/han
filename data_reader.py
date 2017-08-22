@@ -33,7 +33,7 @@ def dense_to_one_hot(labels_dense):
     num_labels = labels_dense.shape[0]
     index_offset = numpy.arange(num_labels) * num_classes
     labels_one_hot = numpy.zeros((num_labels, num_classes))
-    labels_one_hot.flat[index_offset + labels_dense.ravel()] = 1
+    labels_one_hot.flat[index_offset + map(lambda x: unique_labels.index(x), labels_dense.ravel())] = 1
     return labels_one_hot
 
 class DataSet(object):
@@ -129,7 +129,7 @@ def read_data_sets(train_dir,
   if not 0 <= validation_size <= len(images):
     raise ValueError(
         'Validation size should be between 0 and {}. Received: {}.'
-        .format(len(train_images), validation_size))
+        .format(len(images), validation_size))
 
   validation_images = images[:validation_size]
   validation_labels = labels[:validation_size]
