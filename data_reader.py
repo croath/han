@@ -131,12 +131,12 @@ def read_data_sets(train_dir,
         'Validation size should be between 0 and {}. Received: {}.'
         .format(len(train_images), validation_size))
 
-  validation_images = train_images[:validation_size]
-  validation_labels = train_labels[:validation_size]
-  test_images = train_images[:validation_size]
-  test_labels = train_labels[:validation_size]
-  train_images = train_images[validation_size:]
-  train_labels = train_labels[validation_size:]
+  validation_images = images[:validation_size]
+  validation_labels = labels[:validation_size]
+  test_images = images[:validation_size]
+  test_labels = labels[:validation_size]
+  train_images = images[validation_size:]
+  train_labels = labels[validation_size:]
 
   options = dict(reshape=reshape, seed=seed)
 
