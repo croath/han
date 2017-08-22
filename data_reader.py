@@ -29,11 +29,11 @@ def extract_data(path):
 def dense_to_one_hot(labels_dense):
     unique_labels = list(set(labels_dense))
     num_classes = len(unique_labels)
+    print(num_classes)
     num_labels = labels_dense.shape[0]
     index_offset = numpy.arange(num_labels) * num_classes
     labels_one_hot = numpy.zeros((num_labels, num_classes))
     labels_one_hot.flat[index_offset + labels_dense.ravel()] = 1
-    print(num_classes)
     return labels_one_hot
 
 class DataSet(object):
