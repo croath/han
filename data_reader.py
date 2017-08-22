@@ -24,7 +24,7 @@ def extract_data(path):
                 result = camera < val
                 images.append(result)
                 labels.append(int(filename.split('_')[0][3:], 16))
-    return numpy.array(images), dense_to_one_hot(numpy.array(labels, dtype=numpy.uint8))
+    return numpy.array(images), dense_to_one_hot(numpy.array(labels, dtype=numpy.uint32))
 
 def dense_to_one_hot(labels_dense):
     unique_labels = list(set(labels_dense))
