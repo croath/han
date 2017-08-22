@@ -28,8 +28,8 @@ def extract_data(path):
 
 def dense_to_one_hot(labels_dense):
     unique_labels = list(set(labels_dense))
-    num_classes = len(unique_labels)
-    print(num_classes)
+    # num_classes = len(unique_labels)
+    num_classes = 8877
     num_labels = labels_dense.shape[0]
     index_offset = numpy.arange(num_labels) * num_classes
     labels_one_hot = numpy.zeros((num_labels, num_classes))
@@ -59,7 +59,6 @@ class DataSet(object):
       # Convert shape from [num examples, rows, columns, depth]
       # to [num examples, rows*columns] (assuming depth == 1)
     if reshape:
-      assert images.shape[3] == 1
       images = images.reshape(images.shape[0], images.shape[1] * images.shape[2])
 
     self._images = images
