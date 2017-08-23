@@ -12,6 +12,18 @@ from tensorflow.contrib.learn.python.learn.datasets import base
 from tensorflow.python.framework import dtypes
 from tensorflow.python.framework import random_seed
 
+def get_real_images(paths):
+    real_images = []
+    for path in paths:
+        camera = io.imread(path)
+        val = filters.threshold_otsu(camera)
+        result = camera < val
+        real_images.append(result)
+    np_images = numpy.array(real_images)
+    np_images = np_images.reshape(np_images.shape[0], np_images.shape[1] * np_images.shape[2])
+    return np_images
+
+
 def extract_data(path):
     images = []
     labels = []
@@ -19,10 +31,7 @@ def extract_data(path):
         if os.path.isdir(os.path.join(path, sub_dir)):
             for filename in os.listdir(os.path.join(path, sub_dir)):
                 filefullname = os.path.join(path, sub_dir, filename)
-                camera = io.imread(filefullname)
-                val = filters.threshold_otsu(camera)
-                result = camera < val
-                images.append(result)
+                images.append(filefullname)
                 labels.append(int(filename.split('_')[0][3:], 16))
     return numpy.array(images), dense_to_one_hot(numpy.array(labels, dtype=numpy.uint32))
 
@@ -41,7 +50,6 @@ class DataSet(object):
   def __init__(self,
                images,
                labels,
-               reshape=True,
                seed=None):
     """Construct a DataSet.
     one_hot arg is used only if fake_data is true.  `dtype` can be either
@@ -55,11 +63,6 @@ class DataSet(object):
     assert images.shape[0] == labels.shape[0], (
       'images.shape: %s labels.shape: %s' % (images.shape, labels.shape))
     self._num_examples = images.shape[0]
-
-      # Convert shape from [num examples, rows, columns, depth]
-      # to [num examples, rows*columns] (assuming depth == 1)
-    if reshape:
-      images = images.reshape(images.shape[0], images.shape[1] * images.shape[2])
 
     self._images = images
     self._labels = labels
@@ -111,15 +114,14 @@ class DataSet(object):
       end = self._index_in_epoch
       images_new_part = self._images[start:end]
       labels_new_part = self._labels[start:end]
-      return numpy.concatenate((images_rest_part, images_new_part), axis=0) , numpy.concatenate((labels_rest_part, labels_new_part), axis=0)
+      return get_real_images(numpy.concatenate((images_rest_part, images_new_part), axis=0)) , numpy.concatenate((labels_rest_part, labels_new_part), axis=0)
     else:
       self._index_in_epoch += batch_size
       end = self._index_in_epoch
-      return self._images[start:end], self._labels[start:end]
+      return get_real_images(self._images[start:end]), self._labels[start:end]
 
 
 def read_data_sets(train_dir,
-                   reshape=True,
                    validation_size=500,
                    seed=None):
 
@@ -137,7 +139,7 @@ def read_data_sets(train_dir,
   train_images = images[validation_size:]
   train_labels = labels[validation_size:]
 
-  options = dict(reshape=reshape, seed=seed)
+  options = dict(seed=seed)
 
   train = DataSet(train_images, train_labels, **options)
   validation = DataSet(validation_images, validation_labels, **options)
