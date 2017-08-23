@@ -122,7 +122,7 @@ class DataSet(object):
 
 
 def read_data_sets(train_dir,
-                   validation_size=500,
+                   validation_size=100,
                    seed=None):
 
   images, labels = extract_data(train_dir)
