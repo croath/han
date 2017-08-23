@@ -135,9 +135,9 @@ def main(_):
 
   with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    for i in range(4):
-      batch = mnist.train.next_batch(8877)
-      if i % 1 == 0:
+    for i in range(400):
+      batch = mnist.train.next_batch(500)
+      if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={
             x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
