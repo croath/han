@@ -5,10 +5,13 @@ from __future__ import print_function
 import argparse
 import sys
 import tempfile
-
+import log_helper
+from log_helper import log
 from data_reader import read_data_sets
-
 import tensorflow as tf
+from time import gmtime, strftime
+
+log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log')
 
 FLAGS = None
 
@@ -125,7 +128,7 @@ def main(_):
   accuracy = tf.reduce_mean(correct_prediction)
 
   graph_location = tempfile.mkdtemp()
-  print('Saving graph to: %s' % graph_location)
+  log('Saving graph to: %s' % graph_location)
   train_writer = tf.summary.FileWriter(graph_location)
   train_writer.add_graph(tf.get_default_graph())
 
@@ -136,10 +139,10 @@ def main(_):
       if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={
             x: batch[0], y_: batch[1], keep_prob: 1.0})
-        print('step %d, training accuracy %g' % (i, train_accuracy))
+        log('step %d, training accuracy %g' % (i, train_accuracy))
       train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
 
-    print('test accuracy %g' % accuracy.eval(feed_dict={
+    log('test accuracy %g' % accuracy.eval(feed_dict={
         x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
 
 if __name__ == '__main__':
