@@ -79,8 +79,8 @@ def deepnn(x):
   # Fully connected layer 1 -- after 2 round of downsampling, our 28x28 image
   # is down to 7x7x64 feature maps -- maps this to 1024 features.
   with tf.name_scope('fc1'):
-    W_fc1 = weight_variable([10 * 10 * 256, 1024])
-    b_fc1 = bias_variable([1024])
+    W_fc1 = weight_variable([10 * 10 * 256, 10240])
+    b_fc1 = bias_variable([10240])
 
     h_pool4_flat = tf.reshape(h_pool4, [-1, 10*10*256])
     h_fc1 = tf.nn.relu(tf.matmul(h_pool4_flat, W_fc1) + b_fc1)
@@ -93,7 +93,7 @@ def deepnn(x):
 
   # Map the 1024 features to 10 classes, one for each digit
   with tf.name_scope('fc2'):
-    W_fc2 = weight_variable([1024, 8877])
+    W_fc2 = weight_variable([10240, 8877])
     b_fc2 = bias_variable([8877])
 
     y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
