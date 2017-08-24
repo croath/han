@@ -65,14 +65,24 @@ def deepnn(x):
   with tf.name_scope('pool3'):
     h_pool3 = max_pool_2x2(h_conv3)
 
+  # Fourth convolutional layer -- maps 64 feature maps to 128.
+  with tf.name_scope('conv4'):
+    W_conv4 = weight_variable([5, 5, 128, 256])
+    b_conv4 = bias_variable([256])
+    h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
+
+  # Fourth pooling layer.
+  with tf.name_scope('pool4'):
+    h_pool4 = max_pool_2x2(h_conv4)
+
   # Fully connected layer 1 -- after 2 round of downsampling, our 28x28 image
   # is down to 7x7x64 feature maps -- maps this to 1024 features.
   with tf.name_scope('fc1'):
-    W_fc1 = weight_variable([20 * 20 * 128, 1024])
+    W_fc1 = weight_variable([10 * 10 * 256, 1024])
     b_fc1 = bias_variable([1024])
 
-    h_pool3_flat = tf.reshape(h_pool3, [-1, 20*20*128])
-    h_fc1 = tf.nn.relu(tf.matmul(h_pool3_flat, W_fc1) + b_fc1)
+    h_pool4_flat = tf.reshape(h_pool4, [-1, 20*20*256])
+    h_fc1 = tf.nn.relu(tf.matmul(h_pool4_flat, W_fc1) + b_fc1)
 
   # Dropout - controls the complexity of the model, prevents co-adaptation of
   # features.
