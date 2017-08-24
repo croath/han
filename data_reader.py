@@ -124,11 +124,12 @@ class DataSet(object):
     else:
       self._index_in_epoch += batch_size
       end = self._index_in_epoch
+      print(self._labels[start:end])
       return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end])
 
 
 def read_data_sets(train_dir,
-                   validation_size=100,
+                   validation_size=0,
                    seed=None):
 
   images, labels = extract_data(train_dir)

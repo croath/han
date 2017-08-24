@@ -18,6 +18,7 @@ np.set_printoptions(threshold=np.inf)
 log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log')
 
 FLAGS = None
+CHAR_NUM = 8877
 
 def deepnn(x):
   """deepnn builds the graph for a deep net for classifying digits.
@@ -95,8 +96,8 @@ def deepnn(x):
 
   # Map the 1024 features to 10 classes, one for each digit
   with tf.name_scope('fc2'):
-    W_fc2 = weight_variable([1024, 8877])
-    b_fc2 = bias_variable([8877])
+    W_fc2 = weight_variable([1024, CHAR_NUM])
+    b_fc2 = bias_variable([CHAR_NUM])
 
     y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
   return y_conv, keep_prob
@@ -133,7 +134,7 @@ def main(_):
   x = tf.placeholder(tf.float32, [None, 25600])
 
   # Define loss and optimizer
-  y_ = tf.placeholder(tf.float32, [None, 8877])
+  y_ = tf.placeholder(tf.float32, [None, CHAR_NUM])
 
   # Build the graph for the deep net
   y_conv, keep_prob = deepnn(x)
