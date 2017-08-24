@@ -78,35 +78,38 @@ def deepnn(x):
 
   # Fourth pooling layer.
   with tf.name_scope('pool4'):
-    h_pool4 = max_pool_2x2(h_conv4)
+    # h_pool4 = max_pool_2x2(h_conv4)
+    h_pool4 = h_conv4
 
   # 5th convolutional layer -- maps 64 feature maps to 128.
   with tf.name_scope('conv5'):
-    W_conv5 = weight_variable([5, 5, 512, 1024])
-    b_conv5 = bias_variable([1024])
+    W_conv5 = weight_variable([5, 5, 512, 512])
+    b_conv5 = bias_variable([512])
     h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
 
   # 5th pooling layer.
   with tf.name_scope('pool5'):
-    h_pool5 = max_pool_2x2(h_conv5)
+    # h_pool5 = max_pool_2x2(h_conv5)
+    h_pool5 = h_conv5
 
   # 6th convolutional layer -- maps 64 feature maps to 128.
   with tf.name_scope('conv6'):
-    W_conv6 = weight_variable([5, 5, 1024, 2048])
-    b_conv6 = bias_variable([2048])
+    W_conv6 = weight_variable([5, 5, 512, 512])
+    b_conv6 = bias_variable([512])
     h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
 
   # 6th pooling layer.
   with tf.name_scope('pool6'):
     h_pool6 = max_pool_2x2(h_conv6)
+    # h_pool6 = h_conv6
 
   # Fully connected layer 1 -- after 2 round of downsampling, our 28x28 image
   # is down to 7x7x64 feature maps -- maps this to 1024 features.
   with tf.name_scope('fc1'):
-    W_fc1 = weight_variable([1 * 1 * 2048, 1024])
+    W_fc1 = weight_variable([4 * 4 * 512, 1024])
     b_fc1 = bias_variable([1024])
 
-    h_pool6_flat = tf.reshape(h_pool6, [-1, 1*1*2048])
+    h_pool6_flat = tf.reshape(h_pool6, [-1, 4*4*512])
     h_fc1 = tf.nn.relu(tf.matmul(h_pool6_flat, W_fc1) + b_fc1)
 
   # Dropout - controls the complexity of the model, prevents co-adaptation of
