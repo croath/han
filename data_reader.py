@@ -124,7 +124,6 @@ class DataSet(object):
     else:
       self._index_in_epoch += batch_size
       end = self._index_in_epoch
-      print(self._labels[start:end])
       return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end])
 
 
