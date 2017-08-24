@@ -40,6 +40,7 @@ def extract_data(path):
     return numpy.array(images), labels
 
 def create_label_list(labels):
+    global unique_label_list
     unique_label_list = list(set(labels))
 
 def dense_to_one_hot(labels_dense):
