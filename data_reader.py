@@ -12,6 +12,8 @@ from tensorflow.contrib.learn.python.learn.datasets import base
 from tensorflow.python.framework import dtypes
 from tensorflow.python.framework import random_seed
 
+unique_label_list = []
+
 def get_real_images(paths):
     real_images = []
     for path in paths:
@@ -33,16 +35,19 @@ def extract_data(path):
                 filefullname = os.path.join(path, sub_dir, filename)
                 images.append(filefullname)
                 labels.append(int(filename.split('_')[0][3:], 16))
-    return numpy.array(images), dense_to_one_hot(numpy.array(labels, dtype=numpy.uint32))
+    labels = numpy.array(labels, dtype=numpy.uint32)
+    create_label_list(labels)
+    return numpy.array(images), labels
+
+def create_label_list(labels):
+    unique_label_list = list(set(labels))
 
 def dense_to_one_hot(labels_dense):
-    unique_labels = list(set(labels_dense))
-    # num_classes = len(unique_labels)
-    num_classes = 8877
+    num_classes = len(unique_label_list)
     num_labels = labels_dense.shape[0]
     index_offset = numpy.arange(num_labels) * num_classes
     labels_one_hot = numpy.zeros((num_labels, num_classes))
-    labels_one_hot.flat[index_offset + map(lambda x: unique_labels.index(x), labels_dense.ravel())] = 1
+    labels_one_hot.flat[index_offset + map(lambda x: unique_label_list.index(x), labels_dense.ravel())] = 1
     return labels_one_hot
 
 class DataSet(object):
@@ -114,11 +119,11 @@ class DataSet(object):
       end = self._index_in_epoch
       images_new_part = self._images[start:end]
       labels_new_part = self._labels[start:end]
-      return get_real_images(numpy.concatenate((images_rest_part, images_new_part), axis=0)) , numpy.concatenate((labels_rest_part, labels_new_part), axis=0)
+      return get_real_images(numpy.concatenate((images_rest_part, images_new_part), axis=0)) , dense_to_one_hot(numpy.concatenate((labels_rest_part, labels_new_part), axis=0))
     else:
       self._index_in_epoch += batch_size
       end = self._index_in_epoch
-      return get_real_images(self._images[start:end]), self._labels[start:end]
+      return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end])
 
 
 def read_data_sets(train_dir,

@@ -9,6 +9,7 @@ import log_helper
 from log_helper import log
 from data_reader import read_data_sets
 from data_reader import get_real_images
+from data_reader import dense_to_one_hot
 import tensorflow as tf
 from time import gmtime, strftime
 
@@ -164,7 +165,7 @@ def main(_):
       train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
 
     log('test accuracy %g' % accuracy.eval(feed_dict={
-        x: get_real_images(mnist.test.images), y_: mnist.test.labels, keep_prob: 1.0}))
+        x: get_real_images(mnist.test.images), y_: dense_to_one_hot(mnist.test.labels), keep_prob: 1.0}))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
