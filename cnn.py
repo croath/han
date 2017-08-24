@@ -82,7 +82,7 @@ def deepnn(x):
     W_fc1 = weight_variable([10 * 10 * 256, 1024])
     b_fc1 = bias_variable([1024])
 
-    h_pool4_flat = tf.reshape(h_pool4, [-1, 20*20*256])
+    h_pool4_flat = tf.reshape(h_pool4, [-1, 10*10*256])
     h_fc1 = tf.nn.relu(tf.matmul(h_pool4_flat, W_fc1) + b_fc1)
 
   # Dropout - controls the complexity of the model, prevents co-adaptation of
