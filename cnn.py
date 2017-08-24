@@ -18,7 +18,7 @@ np.set_printoptions(threshold=np.inf)
 log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log')
 
 FLAGS = None
-# CHAR_NUM = 205
+# CHAR_NUM = 2
 CHAR_NUM = 8877
 
 def deepnn(x):
@@ -38,7 +38,7 @@ def deepnn(x):
   # Last dimension is for "features" - there is only one here, since images are
   # grayscale -- it would be 3 for an RGB image, 4 for RGBA, etc.
   with tf.name_scope('reshape'):
-    x_image = tf.reshape(x, [-1, 160, 160, 1])
+    x_image = tf.reshape(x, [-1, 64, 64, 1])
 
   # First convolutional layer - maps one grayscale image to 32 feature maps.
   with tf.name_scope('conv1'):
@@ -80,14 +80,34 @@ def deepnn(x):
   with tf.name_scope('pool4'):
     h_pool4 = max_pool_2x2(h_conv4)
 
+  # 5th convolutional layer -- maps 64 feature maps to 128.
+  with tf.name_scope('conv5'):
+    W_conv5 = weight_variable([5, 5, 512, 1024])
+    b_conv5 = bias_variable([1024])
+    h_conv5 = tf.nn.relu(conv2d(h_pool4, W_conv5) + b_conv5)
+
+  # 5th pooling layer.
+  with tf.name_scope('pool5'):
+    h_pool5 = max_pool_2x2(h_conv5)
+
+  # 6th convolutional layer -- maps 64 feature maps to 128.
+  with tf.name_scope('conv6'):
+    W_conv6 = weight_variable([5, 5, 1024, 2048])
+    b_conv6 = bias_variable([2048])
+    h_conv6 = tf.nn.relu(conv2d(h_pool5, W_conv6) + b_conv6)
+
+  # 6th pooling layer.
+  with tf.name_scope('pool6'):
+    h_pool6 = max_pool_2x2(h_conv6)
+
   # Fully connected layer 1 -- after 2 round of downsampling, our 28x28 image
   # is down to 7x7x64 feature maps -- maps this to 1024 features.
   with tf.name_scope('fc1'):
-    W_fc1 = weight_variable([10 * 10 * 512, 1024])
+    W_fc1 = weight_variable([1 * 1 * 2048, 1024])
     b_fc1 = bias_variable([1024])
 
-    h_pool4_flat = tf.reshape(h_pool4, [-1, 10*10*512])
-    h_fc1 = tf.nn.relu(tf.matmul(h_pool4_flat, W_fc1) + b_fc1)
+    h_pool6_flat = tf.reshape(h_pool6, [-1, 1*1*2048])
+    h_fc1 = tf.nn.relu(tf.matmul(h_pool6_flat, W_fc1) + b_fc1)
 
   # Dropout - controls the complexity of the model, prevents co-adaptation of
   # features.
@@ -132,7 +152,7 @@ def main(_):
   mnist = read_data_sets(FLAGS.data_dir)
 
   # Create the model
-  x = tf.placeholder(tf.float32, [None, 25600])
+  x = tf.placeholder(tf.float32, [None, 4096])
 
   # Define loss and optimizer
   y_ = tf.placeholder(tf.float32, [None, CHAR_NUM])
@@ -163,7 +183,7 @@ def main(_):
   with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for i in range(40000):
-      batch = mnist.train.next_batch(100)
+      batch = mnist.train.next_batch(400)
       if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
@@ -177,7 +197,7 @@ def main(_):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--data_dir', type=str,
-                      default='/Users/croath/Desktop/sample/data2',
+                      default='/Users/croath/Desktop/sample/data3',
                       help='Directory for storing input data')
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
