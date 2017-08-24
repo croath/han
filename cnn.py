@@ -146,7 +146,9 @@ def main(_):
   cross_entropy = tf.reduce_mean(cross_entropy)
 
   with tf.name_scope('adam_optimizer'):
-    train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+    global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
+    rate = tf.train.exponential_decay(2e-4, global_step, decay_steps=2000, decay_rate=0.97, staircase=True)
+    train_step = tf.train.AdamOptimizer(rate).minimize(cross_entropy, global_step=global_step)
 
   with tf.name_scope('accuracy'):
     correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))
@@ -163,8 +165,7 @@ def main(_):
     for i in range(7200):
       batch = mnist.train.next_batch(100)
       if i % 100 == 0:
-        train_accuracy = accuracy.eval(feed_dict={
-            x: batch[0], y_: batch[1], keep_prob: 1.0})
+        train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
       _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
       if i % 10 == 0:
