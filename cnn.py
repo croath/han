@@ -42,8 +42,8 @@ def deepnn(x):
 
   # First convolutional layer - maps one grayscale image to 32 feature maps.
   with tf.name_scope('conv1'):
-    W_conv1 = weight_variable([5, 5, 1, 128])
-    b_conv1 = bias_variable([128])
+    W_conv1 = weight_variable([5, 5, 1, 64])
+    b_conv1 = bias_variable([64])
     h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
 
   # Pooling layer - downsamples by 2X.
@@ -52,8 +52,8 @@ def deepnn(x):
 
   # Second convolutional layer -- maps 32 feature maps to 64.
   with tf.name_scope('conv2'):
-    W_conv2 = weight_variable([5, 5, 128, 256])
-    b_conv2 = bias_variable([256])
+    W_conv2 = weight_variable([5, 5, 64, 128])
+    b_conv2 = bias_variable([128])
     h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
 
   # Second pooling layer.
@@ -62,8 +62,8 @@ def deepnn(x):
 
   # Third convolutional layer -- maps 64 feature maps to 128.
   with tf.name_scope('conv3'):
-    W_conv3 = weight_variable([5, 5, 256, 512])
-    b_conv3 = bias_variable([512])
+    W_conv3 = weight_variable([5, 5, 128, 256])
+    b_conv3 = bias_variable([256])
     h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
 
   # Third pooling layer.
@@ -72,8 +72,8 @@ def deepnn(x):
 
   # Fourth convolutional layer -- maps 64 feature maps to 128.
   with tf.name_scope('conv4'):
-    W_conv4 = weight_variable([5, 5, 512, 1024])
-    b_conv4 = bias_variable([1024])
+    W_conv4 = weight_variable([5, 5, 256, 512])
+    b_conv4 = bias_variable([512])
     h_conv4 = tf.nn.relu(conv2d(h_pool3, W_conv4) + b_conv4)
 
   # Fourth pooling layer.
@@ -83,10 +83,10 @@ def deepnn(x):
   # Fully connected layer 1 -- after 2 round of downsampling, our 28x28 image
   # is down to 7x7x64 feature maps -- maps this to 1024 features.
   with tf.name_scope('fc1'):
-    W_fc1 = weight_variable([10 * 10 * 1024, 8192])
-    b_fc1 = bias_variable([8192])
+    W_fc1 = weight_variable([10 * 10 * 512, 1024])
+    b_fc1 = bias_variable([1024])
 
-    h_pool4_flat = tf.reshape(h_pool4, [-1, 10*10*1024])
+    h_pool4_flat = tf.reshape(h_pool4, [-1, 10*10*512])
     h_fc1 = tf.nn.relu(tf.matmul(h_pool4_flat, W_fc1) + b_fc1)
 
   # Dropout - controls the complexity of the model, prevents co-adaptation of
@@ -97,7 +97,7 @@ def deepnn(x):
 
   # Map the 1024 features to 10 classes, one for each digit
   with tf.name_scope('fc2'):
-    W_fc2 = weight_variable([8192, CHAR_NUM])
+    W_fc2 = weight_variable([1024, CHAR_NUM])
     b_fc2 = bias_variable([CHAR_NUM])
 
     y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
