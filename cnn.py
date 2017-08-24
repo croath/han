@@ -18,6 +18,7 @@ np.set_printoptions(threshold=np.inf)
 log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log')
 
 FLAGS = None
+# CHAR_NUM = 205
 CHAR_NUM = 8877
 
 def deepnn(x):
@@ -165,7 +166,9 @@ def main(_):
         train_accuracy = accuracy.eval(feed_dict={
             x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
-      train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
+      _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
+      if i % 10 == 0:
+        log('loss is %g' % loss_val)
 
     log('test accuracy %g' % accuracy.eval(feed_dict={
         x: get_real_images(mnist.test.images), y_: dense_to_one_hot(mnist.test.labels), keep_prob: 1.0}))
