@@ -57,11 +57,6 @@ class DataSet(object):
                images,
                labels,
                seed=None):
-    """Construct a DataSet.
-    one_hot arg is used only if fake_data is true.  `dtype` can be either
-    `uint8` to leave the input as `[0, 255]`, or `float32` to rescale into
-    `[0, 1]`.  Seed arg provides for convenient deterministic testing.
-    """
     seed1, seed2 = random_seed.get_seed(seed)
     # If op level seed is not set, use whatever graph level seed is returned
     numpy.random.seed(seed1 if seed is None else seed2)
@@ -69,7 +64,6 @@ class DataSet(object):
     assert images.shape[0] == labels.shape[0], (
       'images.shape: %s labels.shape: %s' % (images.shape, labels.shape))
     self._num_examples = images.shape[0]
-
     self._images = images
     self._labels = labels
     self._epochs_completed = 0

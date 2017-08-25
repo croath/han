@@ -79,7 +79,7 @@ def main(_):
 
   with tf.Session() as sess:
       saver = tf.train.Saver()
-      
+
       if FLAGS.read_from_checkpoint:
           ckpt = tf.train.get_checkpoint_state(FLAGS.checkpoint_dir)
           if ckpt and ckpt.model_checkpoint_path:
@@ -98,8 +98,8 @@ def main(_):
           if i % 100 == 0:
               log('loss is %g' % loss_val)
               saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
-              log('test accuracy %g' %
-              accuracy.eval(feed_dict={x: get_real_images(mnist.test.images), y_: dense_to_one_hot(mnist.test.labels), keep_prob: 1.0}))
+
+      log('test accuracy %g' % accuracy.eval(feed_dict={x: get_real_images(mnist.test.images), y_: dense_to_one_hot(mnist.test.labels), keep_prob: 1.0}))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
