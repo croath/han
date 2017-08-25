@@ -19,7 +19,7 @@ np.set_printoptions(threshold=np.inf)
 log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log')
 
 FLAGS = None
-# CHAR_NUM = 2
+# CHAR_NUM = 205
 CHAR_NUM = 8877
 
 def deepnn(x):
@@ -67,7 +67,7 @@ def main(_):
   with tf.name_scope('adam_optimizer'):
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
     rate = tf.train.exponential_decay(2e-4, global_step, decay_steps=2000, decay_rate=0.97, staircase=True)
-    train_step = tf.train.AdamOptimizer(rate).minimize(cross_entropy, global_step=global_step)
+    train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy, global_step=global_step)
 
   with tf.name_scope('accuracy'):
     correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))
@@ -96,7 +96,7 @@ def main(_):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--data_dir', type=str,
-                      default='/Users/croath/Desktop/sample/data3',
+                      default='/Users/croath/Desktop/sample/data2',
                       help='Directory for storing input data')
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
