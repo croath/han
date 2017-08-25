@@ -19,8 +19,6 @@ np.set_printoptions(threshold=np.inf)
 log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log')
 
 FLAGS = None
-# CHAR_NUM = 205
-CHAR_NUM = 8877
 
 def deepnn(x):
     batch_norm_params = {'is_training': True, 'decay': 0.9, 'updates_collections': None}
@@ -41,7 +39,7 @@ def deepnn(x):
 
         flatten = slim.flatten(max_pool_7)
         fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 2048, activation_fn=tf.nn.relu, scope='fc1')
-        logits = slim.fully_connected(slim.dropout(fc1, keep_prob), CHAR_NUM, activation_fn=None, scope='fc2')
+        logits = slim.fully_connected(slim.dropout(fc1, keep_prob), FLAGS.charater_num, activation_fn=None, scope='fc2')
     return logits, keep_prob
 
 def main(_):
@@ -52,7 +50,7 @@ def main(_):
   x = tf.placeholder(tf.float32, [None, 4096])
 
   # Define loss and optimizer
-  y_ = tf.placeholder(tf.float32, [None, CHAR_NUM])
+  y_ = tf.placeholder(tf.float32, [None, FLAGS.charater_num])
 
   # Build the graph for the deep net
   y_conv, keep_prob = deepnn(x)
@@ -107,5 +105,6 @@ if __name__ == '__main__':
   parser.add_argument('--checkpoint_dir', type=str, default='/Users/croath/Desktop/checkpoint/', help='Directory for stroing checkpoint')
   parser.add_argument('--graph_dir', type=str, help='Directory to save graph')
   parser.add_argument('--read_from_checkpoint', type=bool, default=False, help='Load from a checkpoint or not')
+  parser.add_argument('--charater_num', type=int, default=205, help='How many unique characters you have')
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
