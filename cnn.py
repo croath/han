@@ -90,7 +90,7 @@ def main(_):
           sess.run(tf.global_variables_initializer())
 
       for i in range(10000):
-          batch = mnist.train.next_batch(20)
+          batch = mnist.train.next_batch(200)
           if i % 100 == 0:
               train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
               log('step %d, training accuracy %g' % (i, train_accuracy))
