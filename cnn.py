@@ -82,12 +82,12 @@ def main(_):
   with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for i in range(40000):
-      batch = mnist.train.next_batch(400)
-      if i % 100 == 0:
+      batch = mnist.train.next_batch(100)
+      if i % 10 == 0:
         train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
       _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
-      if i % 100 == 0:
+      if i % 10 == 0:
         log('loss is %g' % loss_val)
 
     log('test accuracy %g' % accuracy.eval(feed_dict={
