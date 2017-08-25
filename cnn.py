@@ -78,23 +78,34 @@ def main(_):
   train_writer.add_graph(tf.get_default_graph())
 
   with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    for i in range(40000):
-      batch = mnist.train.next_batch(200)
-      if i % 100 == 0:
-        train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
-        log('step %d, training accuracy %g' % (i, train_accuracy))
-      _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
-      if i % 100 == 0:
-        log('loss is %g' % loss_val)
+      saver = tf.train.Saver()
+      
+      if FLAGS.read_from_checkpoint:
+          ckpt = tf.train.get_checkpoint_state(FLAGS.checkpoint_dir)
+          if ckpt and ckpt.model_checkpoint_path:
+              saver.restore(sess, ckpt.model_checkpoint_path)
+          else:
+              sess.run(tf.global_variables_initializer())
+      else:
+          sess.run(tf.global_variables_initializer())
 
-    log('test accuracy %g' % accuracy.eval(feed_dict={
-        x: get_real_images(mnist.test.images), y_: dense_to_one_hot(mnist.test.labels), keep_prob: 1.0}))
+      for i in range(10000):
+          batch = mnist.train.next_batch(20)
+          if i % 100 == 0:
+              train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
+              log('step %d, training accuracy %g' % (i, train_accuracy))
+          _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
+          if i % 100 == 0:
+              log('loss is %g' % loss_val)
+              saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
+              log('test accuracy %g' %
+              accuracy.eval(feed_dict={x: get_real_images(mnist.test.images), y_: dense_to_one_hot(mnist.test.labels), keep_prob: 1.0}))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
-  parser.add_argument('--data_dir', type=str,
-                      default='/Users/croath/Desktop/sample/data2',
-                      help='Directory for storing input data')
+  parser.add_argument('--data_dir', type=str, default='/Users/croath/Desktop/sample/data2', help='Directory for storing input data')
+  parser.add_argument('--checkpoint_dir', type=str, default='/Users/croath/Desktop/checkpoint/', help='Directory for stroing checkpoint')
+  parser.add_argument('--graph_dir', type=str, help='Directory to save graph')
+  parser.add_argument('--read_from_checkpoint', type=bool, default=False, help='Load from a checkpoint or not')
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
