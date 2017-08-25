@@ -23,28 +23,26 @@ FLAGS = None
 CHAR_NUM = 8877
 
 def deepnn(x):
-  keep_prob = tf.placeholder(dtype=tf.float32, shape=[], name='keep_prob')
+    batch_norm_params = {'is_training': True, 'decay': 0.9, 'updates_collections': None}
+    with slim.arg_scope([slim.conv2d, slim.fully_connected], normalizer_fn=slim.batch_norm, normalizer_params=batch_norm_params):
+        keep_prob = tf.placeholder(dtype=tf.float32, shape=[], name='keep_prob')
+        x_image = tf.reshape(x, [-1, 64, 64, 1])
+        conv_1 = slim.conv2d(x_image, 64, [3, 3], 1, padding='SAME', scope='conv1')
+        max_pool_1 = slim.max_pool2d(conv_1, [2, 2], [2, 2], padding='SAME')
+        conv_2 = slim.conv2d(max_pool_1, 128, [3, 3], padding='SAME', scope='conv2')
+        max_pool_2 = slim.max_pool2d(conv_2, [2, 2], [2, 2], padding='SAME')
+        conv_3 = slim.conv2d(max_pool_2, 256, [3, 3], padding='SAME', scope='conv3')
+        max_pool_3 = slim.max_pool2d(conv_3, [2, 2], [2, 2], padding='SAME')
+        conv_4 = slim.conv2d(max_pool_3, 512, [3, 3], padding='SAME', scope='conv4')
+        conv_5 = slim.conv2d(conv_4, 1024, [3, 3], padding='SAME', scope='conv5')
+        conv_6 = slim.conv2d(conv_5, 1024, [3, 3], padding='SAME', scope='conv6')
+        conv_7 = slim.conv2d(conv_6, 1024, [3, 3], padding='SAME', scope='conv7')
+        max_pool_7 = slim.max_pool2d(conv_7, [2, 2], [2, 2], padding='SAME')
 
-  with tf.name_scope('reshape'):
-    x_image = tf.reshape(x, [-1, 64, 64, 1])
-
-  conv_1 = slim.conv2d(x_image, 64, [3, 3], 1, padding='SAME', scope='conv1')
-  max_pool_1 = slim.max_pool2d(conv_1, [2, 2], [2, 2], padding='SAME')
-  conv_2 = slim.conv2d(max_pool_1, 128, [3, 3], padding='SAME', scope='conv2')
-  max_pool_2 = slim.max_pool2d(conv_2, [2, 2], [2, 2], padding='SAME')
-  conv_3 = slim.conv2d(max_pool_2, 256, [3, 3], padding='SAME', scope='conv3')
-  max_pool_3 = slim.max_pool2d(conv_3, [2, 2], [2, 2], padding='SAME')
-  conv_4 = slim.conv2d(max_pool_3, 512, [3, 3], padding='SAME', scope='conv4')
-  conv_5 = slim.conv2d(conv_4, 1024, [3, 3], padding='SAME', scope='conv5')
-  conv_6 = slim.conv2d(conv_5, 1024, [3, 3], padding='SAME', scope='conv6')
-  conv_7 = slim.conv2d(conv_6, 1024, [3, 3], padding='SAME', scope='conv7')
-  max_pool_7 = slim.max_pool2d(conv_7, [2, 2], [2, 2], padding='SAME')
-
-  flatten = slim.flatten(max_pool_7)
-  fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 2048, activation_fn=tf.nn.relu, scope='fc1')
-  logits = slim.fully_connected(slim.dropout(fc1, keep_prob), CHAR_NUM, activation_fn=None, scope='fc2')
-
-  return logits, keep_prob
+        flatten = slim.flatten(max_pool_7)
+        fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 2048, activation_fn=tf.nn.relu, scope='fc1')
+        logits = slim.fully_connected(slim.dropout(fc1, keep_prob), CHAR_NUM, activation_fn=None, scope='fc2')
+    return logits, keep_prob
 
 def main(_):
   # Import data
@@ -87,7 +85,7 @@ def main(_):
         train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
       _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
-      if i % 100 == 0 or i == 0:
+      if i % 100 == 0:
         log('loss is %g' % loss_val)
 
     log('test accuracy %g' % accuracy.eval(feed_dict={
