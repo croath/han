@@ -41,7 +41,7 @@ def deepnn(x):
   max_pool_7 = slim.max_pool2d(conv_7, [2, 2], [2, 2], padding='SAME')
 
   flatten = slim.flatten(max_pool_7)
-  fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 1024, activation_fn=tf.nn.relu, scope='fc1')
+  fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 2048, activation_fn=tf.nn.relu, scope='fc1')
   logits = slim.fully_connected(slim.dropout(fc1, keep_prob), CHAR_NUM, activation_fn=None, scope='fc2')
 
   return logits, keep_prob
@@ -67,7 +67,7 @@ def main(_):
   with tf.name_scope('adam_optimizer'):
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
     rate = tf.train.exponential_decay(2e-4, global_step, decay_steps=2000, decay_rate=0.97, staircase=True)
-    train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy, global_step=global_step)
+    train_step = tf.train.AdamOptimizer(rate).minimize(cross_entropy, global_step=global_step)
 
   with tf.name_scope('accuracy'):
     correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))
