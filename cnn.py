@@ -66,7 +66,7 @@ def main(_):
 
   with tf.name_scope('adam_optimizer'):
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    rate = tf.train.exponential_decay(1e-4, global_step, decay_steps=2000, decay_rate=0.97, staircase=True)
+    rate = tf.train.exponential_decay(1e-2, global_step, decay_steps=2000, decay_rate=0.99, staircase=True)
     train_step = tf.train.AdamOptimizer(rate).minimize(cross_entropy, global_step=global_step)
 
   with tf.name_scope('accuracy'):
@@ -82,12 +82,12 @@ def main(_):
   with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for i in range(40000):
-      batch = mnist.train.next_batch(200)
+      batch = mnist.train.next_batch(200）
       if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
       _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
-      if i % 100 == 0:
+      if i % 100 == 0 || i == 0:
         log('loss is %g' % loss_val)
 
     log('test accuracy %g' % accuracy.eval(feed_dict={

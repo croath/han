@@ -19,7 +19,7 @@ def get_real_images(paths):
     for path in paths:
         camera = io.imread(path)
         val = filters.threshold_otsu(camera)
-        result = (camera < val)*1
+        result = (camera < val)*1.0
         real_images.append(result)
     np_images = numpy.array(real_images)
     np_images = np_images.reshape(np_images.shape[0], np_images.shape[1] * np_images.shape[2])
