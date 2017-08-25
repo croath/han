@@ -66,7 +66,7 @@ def main(_):
 
   with tf.name_scope('adam_optimizer'):
     global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    rate = tf.train.exponential_decay(2e-4, global_step, decay_steps=2000, decay_rate=0.97, staircase=True)
+    rate = tf.train.exponential_decay(2e-3, global_step, decay_steps=2000, decay_rate=0.97, staircase=True)
     train_step = tf.train.AdamOptimizer(rate).minimize(cross_entropy, global_step=global_step)
 
   with tf.name_scope('accuracy'):
