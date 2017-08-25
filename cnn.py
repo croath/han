@@ -35,9 +35,9 @@ def deepnn(x):
   conv_3 = slim.conv2d(max_pool_2, 256, [3, 3], padding='SAME', scope='conv3')
   max_pool_3 = slim.max_pool2d(conv_3, [2, 2], [2, 2], padding='SAME')
   conv_4 = slim.conv2d(max_pool_3, 512, [3, 3], padding='SAME', scope='conv4')
-  conv_5 = slim.conv2d(conv_4, 512, [3, 3], padding='SAME', scope='conv5')
-  conv_6 = slim.conv2d(conv_5, 512, [3, 3], padding='SAME', scope='conv6')
-  conv_7 = slim.conv2d(conv_6, 512, [3, 3], padding='SAME', scope='conv7')
+  conv_5 = slim.conv2d(conv_4, 1024, [3, 3], padding='SAME', scope='conv5')
+  conv_6 = slim.conv2d(conv_5, 1024, [3, 3], padding='SAME', scope='conv6')
+  conv_7 = slim.conv2d(conv_6, 1024, [3, 3], padding='SAME', scope='conv7')
   max_pool_7 = slim.max_pool2d(conv_7, [2, 2], [2, 2], padding='SAME')
 
   flatten = slim.flatten(max_pool_7)
@@ -82,12 +82,12 @@ def main(_):
   with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for i in range(40000):
-      batch = mnist.train.next_batch(100)
-      if i % 10 == 0:
+      batch = mnist.train.next_batch(200)
+      if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
         log('step %d, training accuracy %g' % (i, train_accuracy))
       _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
-      if i % 10 == 0:
+      if i % 100 == 0:
         log('loss is %g' % loss_val)
 
     log('test accuracy %g' % accuracy.eval(feed_dict={
