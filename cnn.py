@@ -20,12 +20,13 @@ log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log'
 
 FLAGS = None
 
-def deepnn(x):
+def deepnn(top_k):
     batch_norm_params = {'is_training': True, 'decay': 0.9, 'updates_collections': None}
     with slim.arg_scope([slim.conv2d, slim.fully_connected], normalizer_fn=slim.batch_norm, normalizer_params=batch_norm_params):
         keep_prob = tf.placeholder(dtype=tf.float32, shape=[], name='keep_prob')
-        x_image = tf.reshape(x, [-1, 64, 64, 1])
-        conv_1 = slim.conv2d(x_image, 64, [3, 3], 1, padding='SAME', scope='conv1')
+        images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1], name='images')
+        labels = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.charater_num], name='labels')
+        conv_1 = slim.conv2d(images, 64, [3, 3], 1, padding='SAME', scope='conv1')
         max_pool_1 = slim.max_pool2d(conv_1, [2, 2], [2, 2], padding='SAME')
         conv_2 = slim.conv2d(max_pool_1, 128, [3, 3], padding='SAME', scope='conv2')
         max_pool_2 = slim.max_pool2d(conv_2, [2, 2], [2, 2], padding='SAME')
@@ -40,35 +41,40 @@ def deepnn(x):
         flatten = slim.flatten(max_pool_7)
         fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 2048, activation_fn=tf.nn.relu, scope='fc1')
         logits = slim.fully_connected(slim.dropout(fc1, keep_prob), FLAGS.charater_num, activation_fn=None, scope='fc2')
-    return logits, keep_prob
+
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
+        accuracy = tf.reduce_mean(tf.cast(tf.equal(logits, tf.cast(labels, tf.float32)), tf.float32))
+
+        global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
+        rate = tf.train.exponential_decay(1e-4, global_step, decay_steps=2000, decay_rate=0.99, staircase=True)
+        train_op = tf.train.AdamOptimizer(rate).minimize(loss, global_step=global_step)
+        probabilities = tf.nn.softmax(logits)
+
+        tf.summary.scalar('loss', loss)
+        tf.summary.scalar('accuracy', accuracy)
+        merged_summary_op = tf.summary.merge_all()
+        predicted_val_top_k, predicted_index_top_k = tf.nn.top_k(probabilities, k=top_k)
+        # print(tf.nn.in_top_k(probabilities, y_, top_k).shape)
+        # accuracy_in_top_k = tf.reduce_mean(tf.cast(tf.nn.in_top_k(tf.cast(tf.argmax(probabilities, 1), tf.float32), tf.argmax(y_, 1), top_k), tf.float32))
+
+    return {'images': images,
+            'labels':labels,
+            'keep_prob': keep_prob,
+            'train_op': train_op,
+            'loss': loss,
+            'accuracy': accuracy,
+            'probabilities': probabilities,
+            'predicted_index_top_k': predicted_index_top_k,
+            'predicted_val_top_k': predicted_val_top_k,
+            'merged_summary_op': merged_summary_op,
+            'global_step': global_step}
 
 def main(_):
-  # Import data
-  mnist = read_data_sets(FLAGS.data_dir)
+  train_data = read_data_sets(FLAGS.data_dir)
+  valid_data = read_data_sets(FLAGS.valid_dir)
+  # test_data = read_data_sets(FLAGS.test_dir)
 
-  # Create the model
-  x = tf.placeholder(tf.float32, [None, 4096])
-
-  # Define loss and optimizer
-  y_ = tf.placeholder(tf.float32, [None, FLAGS.charater_num])
-
-  # Build the graph for the deep net
-  y_conv, keep_prob = deepnn(x)
-
-  with tf.name_scope('loss'):
-    cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=y_,
-                                                            logits=y_conv)
-  cross_entropy = tf.reduce_mean(cross_entropy)
-
-  with tf.name_scope('adam_optimizer'):
-    global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
-    rate = tf.train.exponential_decay(1e-4, global_step, decay_steps=2000, decay_rate=0.99, staircase=True)
-    train_step = tf.train.AdamOptimizer(rate).minimize(cross_entropy, global_step=global_step)
-
-  with tf.name_scope('accuracy'):
-    correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))
-    correct_prediction = tf.cast(correct_prediction, tf.float32)
-  accuracy = tf.reduce_mean(correct_prediction)
+  d = deepnn(1)
 
   graph_location = tempfile.mkdtemp()
   log('Saving graph to: %s' % graph_location)
@@ -79,7 +85,7 @@ def main(_):
       saver = tf.train.Saver()
 
       if FLAGS.read_from_checkpoint:
-          ckpt = tf.train.get_checkpoint_state(FLAGS.checkpoint_dir)
+          ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
           if ckpt and ckpt.model_checkpoint_path:
               saver.restore(sess, ckpt.model_checkpoint_path)
           else:
@@ -87,24 +93,38 @@ def main(_):
       else:
           sess.run(tf.global_variables_initializer())
 
-      for i in range(10000):
-          batch = mnist.train.next_batch(200)
-          if i % 100 == 0:
-              train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
-              log('step %d, training accuracy %g' % (i, train_accuracy))
-          _, loss_val = sess.run([train_step, cross_entropy], feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
-          if i % 100 == 0:
-              log('loss is %g' % loss_val)
-              saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
+      if FLAGS.mode == "train":
+          for i in range(FLAGS.epoch_num):
+              train_data.restart_epoch()
+              inside_step = 0
+              while not train_data.epochs_completed:
+                  batch = train_data.next_batch(FLAGS.batch_size)
+                #   if i % (FLAGS.batch_size // 10) == 0:
+                    #   train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
+                  _, loss_val, summary, step, acc = sess.run([d['train_op'], d['loss'], d['merged_summary_op'], d['global_step'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 0.5})
+                  train_writer.add_summary(summary, step)
+                  inside_step += 1
 
-      log('test accuracy %g' % accuracy.eval(feed_dict={x: get_real_images(mnist.test.images), y_: dense_to_one_hot(mnist.test.labels), keep_prob: 1.0}))
+                  log('step %d, training accuracy %g loss is %g'% (i, acc, loss_val))
+                  saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
+              log('epoch %d valid accuracy %g' % (i, d['accuracy'].eval(feed_dict={d['images']: get_real_images(valid_data.images).reshape([-1, 64, 64, 1]), d['labels']: dense_to_one_hot(valid_data.labels), d['keep_prob']: 1.0})))
+      elif FLAGS.mode == "test":
+          while True:
+              log("Input the testing path of images or the parent directory:\n")
+              sentence = sys.stdin.readline(1)
+
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--data_dir', type=str, default='/Users/croath/Desktop/sample/data2', help='Directory for storing input data')
+  parser.add_argument('--valid_dir', type=str, default='/Users/croath/Desktop/sample/data3', help='Directory for storing input data')
   parser.add_argument('--checkpoint_dir', type=str, default='/Users/croath/Desktop/checkpoint/', help='Directory for stroing checkpoint')
   parser.add_argument('--graph_dir', type=str, help='Directory to save graph')
   parser.add_argument('--read_from_checkpoint', type=bool, default=False, help='Load from a checkpoint or not')
   parser.add_argument('--charater_num', type=int, default=205, help='How many unique characters you have')
+  parser.add_argument('--mode', type=str, default='train', help='Running mode')
+  parser.add_argument('--labellist', type=str, default=None, help='Labels list')
+  parser.add_argument('--epoch_num', type=int, default=10, help='Labels list')
+  parser.add_argument('--batch_size', type=int, default=200, help='Labels list')
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)

@@ -41,7 +41,11 @@ def extract_data(path):
 
 def create_label_list(labels):
     global unique_label_list
-    unique_label_list = list(set(labels))
+    if len(unique_label_list) == 0:
+        unique_label_list = sorted(list(set(labels)))
+        with open('labels.list', 'w') as f:
+            f.writelines( list( "%s\n" % item for item in unique_label_list ) )
+
 
 def dense_to_one_hot(labels_dense):
     num_classes = len(unique_label_list)
@@ -85,6 +89,10 @@ class DataSet(object):
   def epochs_completed(self):
     return self._epochs_completed
 
+  def restart_epoch(self):
+      self._epochs_completed = 0
+      self._index_in_epoch = 0
+
   def next_batch(self, batch_size, shuffle=True):
     """Return the next `batch_size` examples from this data set."""
     start = self._index_in_epoch
@@ -122,27 +130,8 @@ class DataSet(object):
 
 
 def read_data_sets(train_dir,
-                   validation_size=100,
                    seed=None):
-
   images, labels = extract_data(train_dir)
-
-  if not 0 <= validation_size <= len(images):
-    raise ValueError(
-        'Validation size should be between 0 and {}. Received: {}.'
-        .format(len(images), validation_size))
-
-  validation_images = images[:validation_size]
-  validation_labels = labels[:validation_size]
-  test_images = images[:validation_size]
-  test_labels = labels[:validation_size]
-  train_images = images[validation_size:]
-  train_labels = labels[validation_size:]
-
   options = dict(seed=seed)
-
-  train = DataSet(train_images, train_labels, **options)
-  validation = DataSet(validation_images, validation_labels, **options)
-  test = DataSet(test_images, test_labels, **options)
-
-  return base.Datasets(train=train, validation=validation, test=test)
+  data = DataSet(images, labels, **options)
+  return data
