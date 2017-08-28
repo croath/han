@@ -88,7 +88,7 @@ def main(_):
   session_config = tf.ConfigProto()
   session_config.gpu_options.per_process_gpu_memory_fraction = FLAGS.gpu_fraction
 
-  with tf.Session(config=gpu_config) as sess:
+  with tf.Session(config=session_config) as sess:
       saver = tf.train.Saver()
 
       if FLAGS.read_from_checkpoint:
