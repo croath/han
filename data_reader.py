@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from skimage import io
 from skimage import filters
 import os
@@ -52,7 +48,7 @@ def dense_to_one_hot(labels_dense):
     num_labels = labels_dense.shape[0]
     index_offset = numpy.arange(num_labels) * num_classes
     labels_one_hot = numpy.zeros((num_labels, num_classes))
-    labels_one_hot.flat[index_offset + map(lambda x: unique_label_list.index(x), labels_dense.ravel())] = 1
+    labels_one_hot.flat[index_offset + [unique_label_list.index(x) for x in labels_dense.ravel()]] = 1
     return labels_one_hot
 
 class DataSet(object):
