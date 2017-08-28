@@ -102,3 +102,4 @@ ENV/
 
 # custom
 labels.list
+output.txt
