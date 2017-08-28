@@ -7,6 +7,6 @@ nohup python3 cnn.py --data_dir=/home/liuzhenfu/training_data/positive_data/ \
  --checkpoint_dir=/mnt/liuzhenfu/checkpoints/ \
  --charater_num=8877 \
  --epoch_num=10 \
- --batch_size=200 \
+ --batch_size=400 \
  --gpu_fraction=0.5 \
  > output.txt 2>&1&
