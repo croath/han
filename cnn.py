@@ -14,6 +14,9 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from time import gmtime, strftime
 import numpy as np
+import uuid
+import os
+
 np.set_printoptions(threshold=np.inf)
 
 log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log')
@@ -77,7 +80,7 @@ def main(_):
 
   d = deepnn(1)
 
-  graph_location = tempfile.mkdtemp() if FLAGS.graph_dir == None else FLAGS.graph_dir
+  graph_location = tempfile.mkdtemp() if FLAGS.graph_dir == None else os.path.join(FLAGS.graph_dir, str(uuid.uuid4()))
   log('Saving graph to: %s' % graph_location)
   train_writer = tf.summary.FileWriter(graph_location)
   train_writer.add_graph(tf.get_default_graph())
