@@ -77,7 +77,7 @@ def main(_):
 
   d = deepnn(1)
 
-  graph_location = tempfile.mkdtemp()
+  graph_location = tempfile.mkdtemp() if FLAGS.graph_dir == None else FLAGS.graph_dir
   log('Saving graph to: %s' % graph_location)
   train_writer = tf.summary.FileWriter(graph_location)
   train_writer.add_graph(tf.get_default_graph())
