@@ -98,7 +98,6 @@ def main(_):
 
       if FLAGS.mode == "train":
           for i in range(FLAGS.epoch_num):
-              train_data.restart_epoch()
               inside_step = 0
               while not train_data.epochs_completed:
                   batch = train_data.next_batch(FLAGS.batch_size)
@@ -110,8 +109,19 @@ def main(_):
                       log('step %d, training accuracy %g loss is %g'% (inside_step, acc, loss_val))
                   inside_step += 1
 
+              train_data.restart_epoch()
               saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
-              pre_labels, acc_val = sess.run([ d['logits'], d['accuracy']], feed_dict={d['images']: get_real_images(valid_data.images).reshape([-1, 64, 64, 1]), d['labels']: dense_to_one_hot(valid_data.labels), d['keep_prob']: 1.0})
+
+              valid_acc = 0.0
+              valid_step = 0
+              while not valid_data.epochs_completed:
+                  batch = valid_data.next_batch(FLAGS.batch_size)
+                  _, acc_val = sess.run([ d['logits'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 1.0})
+                  valid_acc += acc_val
+                  valid_step += 1
+
+              valid_data.restart_epoch()
+              valid_acc = valid_acc / valid_step
               log('epoch %d valid accuracy %g' % (i, acc_val))
       elif FLAGS.mode == "test":
           while True:
