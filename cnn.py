@@ -85,7 +85,10 @@ def main(_):
   train_writer = tf.summary.FileWriter(graph_location)
   train_writer.add_graph(tf.get_default_graph())
 
-  with tf.Session() as sess:
+  session_config = tf.ConfigProto()
+  session_config.gpu_options.per_process_gpu_memory_fraction = FLAGS.gpu_fraction
+
+  with tf.Session(config=gpu_config) as sess:
       saver = tf.train.Saver()
 
       if FLAGS.read_from_checkpoint:
@@ -110,7 +113,7 @@ def main(_):
                   inside_step += 1
                   if inside_step % 50 == 0:
                       log('step %d, training accuracy %g loss is %g'% (inside_step, acc, loss_val))
-                      
+
               saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
               pre_labels, acc_val = sess.run([ d['logits'], d['accuracy']], feed_dict={d['images']: get_real_images(valid_data.images).reshape([-1, 64, 64, 1]), d['labels']: dense_to_one_hot(valid_data.labels), d['keep_prob']: 1.0})
               log('epoch %d valid accuracy %g' % (i, acc_val))
@@ -132,5 +135,6 @@ if __name__ == '__main__':
   parser.add_argument('--labellist', type=str, default=None, help='Labels list')
   parser.add_argument('--epoch_num', type=int, default=10, help='Labels list')
   parser.add_argument('--batch_size', type=int, default=200, help='Labels list')
+  parser.add_argument('--gpu_fraction', type=float, default=1.0, help='Percent of GPU usage')
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
