@@ -106,9 +106,9 @@ def main(_):
                     #   train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
                   _, loss_val, summary, step, acc = sess.run([d['train_op'], d['loss'], d['merged_summary_op'], d['global_step'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 0.5})
                   train_writer.add_summary(summary, step)
-                  inside_step += 1
                   if inside_step % 50 == 0:
                       log('step %d, training accuracy %g loss is %g'% (inside_step, acc, loss_val))
+                  inside_step += 1
 
               saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
               pre_labels, acc_val = sess.run([ d['logits'], d['accuracy']], feed_dict={d['images']: get_real_images(valid_data.images).reshape([-1, 64, 64, 1]), d['labels']: dense_to_one_hot(valid_data.labels), d['keep_prob']: 1.0})
