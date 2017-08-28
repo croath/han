@@ -43,7 +43,7 @@ def deepnn(top_k):
         logits = slim.fully_connected(slim.dropout(fc1, keep_prob), FLAGS.charater_num, activation_fn=None, scope='fc2')
 
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
-        accuracy = tf.reduce_mean(tf.cast(tf.equal(logits, tf.cast(labels, tf.float32)), tf.float32))
+        accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(tf.argmax(logits, 1), tf.int64), tf.argmax(labels, 1)), tf.float32))
 
         global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
         rate = tf.train.exponential_decay(1e-4, global_step, decay_steps=2000, decay_rate=0.99, staircase=True)
@@ -59,6 +59,7 @@ def deepnn(top_k):
 
     return {'images': images,
             'labels':labels,
+            'logits': logits,
             'keep_prob': keep_prob,
             'train_op': train_op,
             'loss': loss,
@@ -105,9 +106,11 @@ def main(_):
                   train_writer.add_summary(summary, step)
                   inside_step += 1
 
-                  log('step %d, training accuracy %g loss is %g'% (i, acc, loss_val))
-                  saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
-              log('epoch %d valid accuracy %g' % (i, d['accuracy'].eval(feed_dict={d['images']: get_real_images(valid_data.images).reshape([-1, 64, 64, 1]), d['labels']: dense_to_one_hot(valid_data.labels), d['keep_prob']: 1.0})))
+                  log('step %d, training accuracy %g loss is %g'% (inside_step, acc, loss_val))
+              saver.save(sess, FLAGS.checkpoint_dir + 'model.ckpt', global_step=i+1)
+
+              pre_labels, acc_val = sess.run([ d['logits'], d['accuracy']], feed_dict={d['images']: get_real_images(valid_data.images).reshape([-1, 64, 64, 1]), d['labels']: dense_to_one_hot(valid_data.labels), d['keep_prob']: 1.0})
+              log('epoch %d valid accuracy %g' % (i, acc_val))
       elif FLAGS.mode == "test":
           while True:
               log("Input the testing path of images or the parent directory:\n")
