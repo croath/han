@@ -6,6 +6,7 @@ from log_helper import log
 from data_reader import read_data_sets
 from data_reader import get_real_images
 from data_reader import dense_to_one_hot
+import data_reader
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from time import gmtime, strftime
@@ -134,8 +135,8 @@ def main(_):
                   label = labels_val[i]
                   logit = logits_val[i]
 
-                  input_char = int_to_chinese(label.argmax())
-                  output_char = int_to_chinese(logit.argmax())
+                  input_char = int_to_chinese(data_reader.unique_label_list[label.argmax()])
+                  output_char = int_to_chinese(data_reader.unique_label_list[logit.argmax()])
 
                   match = True if input_char == output_char else False
                   log('Input: %s\tOuput: %s\t%r' %(input_char, output_char, match))
