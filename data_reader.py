@@ -129,8 +129,7 @@ def read_data_sets(train_dir, labellist_path=None, seed=None):
     global unique_label_list
     if labellist_path != None and len(unique_label_list) == 0:
         with open(labellist_path) as f:
-            unique_label_list = f.read().splitlines()
-            print(unique_label_list)
+            unique_label_list = list(map(int, f.read().splitlines())
 
     images, labels = extract_data(train_dir)
     options = dict(seed=seed)
