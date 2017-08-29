@@ -134,6 +134,8 @@ def main(_):
                   label = labels_val[i]
                   logit = logits_val[i]
 
+                  log(label.tolist().index(1))
+
                   input_char = int_to_chinese(label.tolist().index(1))
                   output_char = int_to_chinese(logit.tolist().index(1))
 
