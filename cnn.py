@@ -88,8 +88,8 @@ def main(_):
 
       if FLAGS.read_from_checkpoint:
           ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
-          if ckpt and ckpt.model_checkpoint_path:
-              saver.restore(sess, ckpt.model_checkpoint_path)
+          if ckpt:
+              saver.restore(sess, ckpt)
           else:
               sess.run(tf.global_variables_initializer())
       else:
