@@ -1,1 +1,8 @@
-nohup python cnn.py --data_dir=/home/croath/Documents/training_data_64/positive_data/ --graph_dir=/home/croath/Documents/graphs/ --checkpoint_dir=/home/croath/Documents/checkpoints/ --charater_num=8877 --mode=valid > output.txt 2>&1&
+nohup python3 cnn.py --data_dir=/home/liuzhenfu/training_data/positive_data/ \
+ --valid_dir=/home/liuzhenfu/training_data/test_data \
+ --graph_dir=/mnt/liuzhenfu/graphs/ \
+ --checkpoint_dir=/mnt/liuzhenfu/checkpoints/ \
+ --charater_num=8877 \
+ --batch_size=400 \
+ --read_from_checkpoint=True \
+ > output.txt 2>&1&

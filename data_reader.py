@@ -125,9 +125,13 @@ class DataSet(object):
       return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end])
 
 
-def read_data_sets(train_dir,
-                   seed=None):
-  images, labels = extract_data(train_dir)
-  options = dict(seed=seed)
-  data = DataSet(images, labels, **options)
-  return data
+def read_data_sets(train_dir, labellist_path=None, seed=None):
+    global unique_label_list
+    if labellist_path != None and len(unique_label_list) == 0:
+        with open(labellist_path) as f:
+            unique_label_list = f.read().splitlines()
+
+    images, labels = extract_data(train_dir)
+    options = dict(seed=seed)
+    data = DataSet(images, labels, **options)
+    return data

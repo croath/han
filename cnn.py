@@ -12,6 +12,7 @@ from time import gmtime, strftime
 import numpy as np
 import uuid
 import os
+from chn_converter import int_to_chinese
 
 np.set_printoptions(threshold=np.inf)
 
@@ -70,9 +71,7 @@ def deepnn(top_k):
             'global_step': global_step}
 
 def main(_):
-  train_data = read_data_sets(FLAGS.data_dir)
-  valid_data = read_data_sets(FLAGS.valid_dir)
-  # test_data = read_data_sets(FLAGS.test_dir)
+  valid_data = read_data_sets(FLAGS.valid_dir, FLAGS.labellist)
 
   d = deepnn(1)
 
@@ -97,6 +96,8 @@ def main(_):
           sess.run(tf.global_variables_initializer())
 
       if FLAGS.mode == "train":
+          train_data = read_data_sets(FLAGS.data_dir, FLAGS.labellist)
+
           for i in range(FLAGS.epoch_num):
               inside_step = 0
               while not train_data.epochs_completed:
@@ -124,9 +125,32 @@ def main(_):
               valid_acc = valid_acc / valid_step
               log('epoch %d valid accuracy %g' % (i, acc_val))
       elif FLAGS.mode == "test":
+          valid_acc = 0.0
+          valid_step = 0
+          while not valid_data.epochs_completed:
+              batch = valid_data.next_batch(FLAGS.batch_size)
+              labels_val, logits_val, acc_val = sess.run([d['labels'], d['logits'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 1.0})
+              for i in range(0, len(labels_val)):
+                  label = labels_val[i]
+                  logit = logits_val[i]
+
+                  input_char = int_to_chinese(label.index(1))
+                  output_char = int_to_chinese(logit.index(1))
+
+                  match = True if input_char == output_char else False
+                  log('Input: %s\tOuput: %s\t%r' %(input_char, output_char, match))
+
+              valid_acc += acc_val
+              valid_step += 1
+
+          valid_acc = valid_acc / valid_step
+          log('Valid accuracy %g' % acc_val)
+
           while True:
               log("Input the testing path of images or the parent directory:\n")
               sentence = sys.stdin.readline(1)
+              test_data = read_data_sets(sentence, FLAGS.labellist)
+
 
 
 if __name__ == '__main__':
