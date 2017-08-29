@@ -1,0 +1,121 @@
+2017-08-28 20:22:07,877 [MainThread  ] [INFO ]  Saving graph to: /mnt/liuzhenfu/graphs/b1cc5ce7-aba5-4e28-b3c9-2d7aed9f1be8
+2017-08-28 20:22:08.007894: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-28 20:22:08.007964: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-28 20:22:08.008007: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-28 20:22:08.008493: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-28 20:22:08.008523: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2017-08-28 20:22:14.511942: I tensorflow/core/common_runtime/gpu/gpu_device.cc:940] Found device 0 with properties:
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 5d3e:00:00.0
+Total memory: 11.17GiB
+Free memory: 11.11GiB
+2017-08-28 20:22:14.512042: I tensorflow/core/common_runtime/gpu/gpu_device.cc:961] DMA: 0
+2017-08-28 20:22:14.512073: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971] 0:   Y
+2017-08-28 20:22:14.512104: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1030] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 5d3e:00:00.0)
+2017-08-28 20:22:20.231922: W tensorflow/core/common_runtime/bfc_allocator.cc:217] Allocator (GPU_0_bfc) ran out of memory trying to allocate 3.16GiB. The caller indicates that this is not a failure, but may mean that there could be performance gains if more memory is available.
+2017-08-28 20:22:22.685602: W tensorflow/core/common_runtime/bfc_allocator.cc:217] Allocator (GPU_0_bfc) ran out of memory trying to allocate 3.16GiB. The caller indicates that this is not a failure, but may mean that there could be performance gains if more memory is available.
+2017-08-28 20:22:24.450612: W tensorflow/core/common_runtime/bfc_allocator.cc:217] Allocator (GPU_0_bfc) ran out of memory trying to allocate 2.35GiB. The caller indicates that this is not a failure, but may mean that there could be performance gains if more memory is available.
+2017-08-28 20:22:30.433306: W tensorflow/core/common_runtime/bfc_allocator.cc:217] Allocator (GPU_0_bfc) ran out of memory trying to allocate 3.61GiB. The caller indicates that this is not a failure, but may mean that there could be performance gains if more memory is available.
+2017-08-28 20:22:30,459 [MainThread  ] [INFO ]  step 0, training accuracy 0 loss is 9.44814
+2017-08-28 20:25:37,593 [MainThread  ] [INFO ]  step 50, training accuracy 0 loss is 9.36526
+2017-08-28 20:28:44,861 [MainThread  ] [INFO ]  step 100, training accuracy 0 loss is 9.19493
+2017-08-28 20:31:53,195 [MainThread  ] [INFO ]  step 150, training accuracy 0 loss is 8.79382
+2017-08-28 20:35:01,412 [MainThread  ] [INFO ]  step 200, training accuracy 0.0025 loss is 8.48724
+2017-08-28 20:38:09,844 [MainThread  ] [INFO ]  step 250, training accuracy 0.0025 loss is 8.25705
+2017-08-28 20:41:18,040 [MainThread  ] [INFO ]  step 300, training accuracy 0.005 loss is 8.08999
+2017-08-28 20:44:26,586 [MainThread  ] [INFO ]  step 350, training accuracy 0.0075 loss is 7.85412
+2017-08-28 20:47:34,761 [MainThread  ] [INFO ]  step 400, training accuracy 0.01 loss is 7.7128
+2017-08-28 20:50:51,985 [MainThread  ] [INFO ]  epoch 0 valid accuracy 0.0775
+2017-08-28 20:50:55,772 [MainThread  ] [INFO ]  step 0, training accuracy 0.01 loss is 7.48759
+2017-08-28 20:54:03,695 [MainThread  ] [INFO ]  step 50, training accuracy 0.0275 loss is 7.27681
+2017-08-28 20:57:11,650 [MainThread  ] [INFO ]  step 100, training accuracy 0.025 loss is 7.15728
+2017-08-28 21:00:04.718562: I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 64818 get requests, put_count=64818 evicted_count=1000 eviction_rate=0.0154278 and unsatisfied allocation rate=0.0169706
+2017-08-28 21:00:04.718677: I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+2017-08-28 21:00:20,258 [MainThread  ] [INFO ]  step 150, training accuracy 0.035 loss is 6.98448
+2017-08-28 21:03:28,688 [MainThread  ] [INFO ]  step 200, training accuracy 0.055 loss is 6.78055
+2017-08-28 21:06:37,630 [MainThread  ] [INFO ]  step 250, training accuracy 0.095 loss is 6.55959
+2017-08-28 21:09:45,539 [MainThread  ] [INFO ]  step 300, training accuracy 0.1425 loss is 6.42324
+2017-08-28 21:12:53,801 [MainThread  ] [INFO ]  step 350, training accuracy 0.175 loss is 6.15659
+2017-08-28 21:16:01,712 [MainThread  ] [INFO ]  step 400, training accuracy 0.15 loss is 6.05326
+2017-08-28 21:19:16,411 [MainThread  ] [INFO ]  epoch 1 valid accuracy 0.525
+2017-08-28 21:19:20,339 [MainThread  ] [INFO ]  step 0, training accuracy 0.235 loss is 5.82438
+2017-08-28 21:22:28,181 [MainThread  ] [INFO ]  step 50, training accuracy 0.285 loss is 5.62127
+2017-08-28 21:25:36,388 [MainThread  ] [INFO ]  step 100, training accuracy 0.295 loss is 5.42885
+2017-08-28 21:28:45,261 [MainThread  ] [INFO ]  step 150, training accuracy 0.375 loss is 5.20331
+2017-08-28 21:31:53,549 [MainThread  ] [INFO ]  step 200, training accuracy 0.4075 loss is 5.03743
+2017-08-28 21:35:24,465 [MainThread  ] [INFO ]  step 250, training accuracy 0.435 loss is 4.90688
+2017-08-28 21:39:27,635 [MainThread  ] [INFO ]  step 300, training accuracy 0.4425 loss is 4.74899
+2017-08-28 21:43:18,439 [MainThread  ] [INFO ]  step 350, training accuracy 0.4975 loss is 4.50669
+2017-08-28 21:47:18,699 [MainThread  ] [INFO ]  step 400, training accuracy 0.6 loss is 4.25872
+2017-08-28 21:50:51,616 [MainThread  ] [INFO ]  epoch 2 valid accuracy 0.8225
+2017-08-28 21:50:56,731 [MainThread  ] [INFO ]  step 0, training accuracy 0.6675 loss is 4.06884
+2017-08-28 21:55:13,826 [MainThread  ] [INFO ]  step 50, training accuracy 0.6175 loss is 3.98419
+2017-08-28 21:59:17,015 [MainThread  ] [INFO ]  step 100, training accuracy 0.67 loss is 3.78606
+2017-08-28 22:03:40,662 [MainThread  ] [INFO ]  step 150, training accuracy 0.7425 loss is 3.62788
+2017-08-28 22:08:08,564 [MainThread  ] [INFO ]  step 200, training accuracy 0.7 loss is 3.59238
+2017-08-28 22:12:33,718 [MainThread  ] [INFO ]  step 250, training accuracy 0.75 loss is 3.36624
+2017-08-28 22:16:59,252 [MainThread  ] [INFO ]  step 300, training accuracy 0.8025 loss is 3.18045
+2017-08-28 22:21:32,723 [MainThread  ] [INFO ]  step 350, training accuracy 0.8025 loss is 3.12572
+2017-08-28 22:26:03,507 [MainThread  ] [INFO ]  step 400, training accuracy 0.82 loss is 3.00674
+2017-08-28 22:30:36,887 [MainThread  ] [INFO ]  epoch 3 valid accuracy 0.9275
+2017-08-28 22:30:41,827 [MainThread  ] [INFO ]  step 0, training accuracy 0.845 loss is 2.81978
+2017-08-28 22:34:36,004 [MainThread  ] [INFO ]  step 50, training accuracy 0.86 loss is 2.67343
+2017-08-28 22:38:36,310 [MainThread  ] [INFO ]  step 100, training accuracy 0.875 loss is 2.5645
+2017-08-28 22:42:50,877 [MainThread  ] [INFO ]  step 150, training accuracy 0.8675 loss is 2.46646
+2017-08-28 22:47:04,451 [MainThread  ] [INFO ]  step 200, training accuracy 0.9025 loss is 2.36691
+2017-08-28 22:51:18,774 [MainThread  ] [INFO ]  step 250, training accuracy 0.8725 loss is 2.37541
+2017-08-28 22:55:33,591 [MainThread  ] [INFO ]  step 300, training accuracy 0.88 loss is 2.23488
+2017-08-28 22:59:48,567 [MainThread  ] [INFO ]  step 350, training accuracy 0.8975 loss is 2.16495
+2017-08-28 23:04:02,962 [MainThread  ] [INFO ]  step 400, training accuracy 0.9125 loss is 2.05144
+2017-08-28 23:08:22,162 [MainThread  ] [INFO ]  epoch 4 valid accuracy 0.96
+2017-08-28 23:08:27,468 [MainThread  ] [INFO ]  step 0, training accuracy 0.915 loss is 1.89668
+2017-08-28 23:12:42,403 [MainThread  ] [INFO ]  step 50, training accuracy 0.9325 loss is 1.81002
+2017-08-28 23:16:57,544 [MainThread  ] [INFO ]  step 100, training accuracy 0.8975 loss is 1.80267
+2017-08-28 23:21:12,223 [MainThread  ] [INFO ]  step 150, training accuracy 0.9575 loss is 1.71324
+2017-08-28 23:25:37,780 [MainThread  ] [INFO ]  step 200, training accuracy 0.945 loss is 1.61142
+2017-08-28 23:29:52,599 [MainThread  ] [INFO ]  step 250, training accuracy 0.9475 loss is 1.56081
+2017-08-28 23:34:06,634 [MainThread  ] [INFO ]  step 300, training accuracy 0.955 loss is 1.51682
+2017-08-28 23:38:21,137 [MainThread  ] [INFO ]  step 350, training accuracy 0.96 loss is 1.42109
+2017-08-28 23:42:35,486 [MainThread  ] [INFO ]  step 400, training accuracy 0.94 loss is 1.41847
+2017-08-28 23:46:55,277 [MainThread  ] [INFO ]  epoch 5 valid accuracy 0.9725
+2017-08-28 23:47:00,255 [MainThread  ] [INFO ]  step 0, training accuracy 0.975 loss is 1.3232
+2017-08-28 23:51:14,247 [MainThread  ] [INFO ]  step 50, training accuracy 0.9625 loss is 1.24815
+2017-08-28 23:55:29,482 [MainThread  ] [INFO ]  step 100, training accuracy 0.975 loss is 1.22316
+2017-08-28 23:59:43,944 [MainThread  ] [INFO ]  step 150, training accuracy 0.9625 loss is 1.21225
+2017-08-29 00:03:58,172 [MainThread  ] [INFO ]  step 200, training accuracy 0.9725 loss is 1.05297
+2017-08-29 00:08:13,205 [MainThread  ] [INFO ]  step 250, training accuracy 0.9625 loss is 1.11783
+2017-08-29 00:12:27,242 [MainThread  ] [INFO ]  step 300, training accuracy 0.9475 loss is 1.11883
+2017-08-29 00:16:42,408 [MainThread  ] [INFO ]  step 350, training accuracy 0.98 loss is 1.05424
+2017-08-29 00:20:57,093 [MainThread  ] [INFO ]  step 400, training accuracy 0.975 loss is 1.05336
+2017-08-29 00:25:16,131 [MainThread  ] [INFO ]  epoch 6 valid accuracy 0.985
+2017-08-29 00:25:21,244 [MainThread  ] [INFO ]  step 0, training accuracy 0.9925 loss is 0.939267
+2017-08-29 00:29:35,573 [MainThread  ] [INFO ]  step 50, training accuracy 0.985 loss is 0.87541
+2017-08-29 00:33:50,052 [MainThread  ] [INFO ]  step 100, training accuracy 0.9825 loss is 0.887558
+2017-08-29 00:38:03,628 [MainThread  ] [INFO ]  step 150, training accuracy 0.985 loss is 0.905144
+2017-08-29 00:42:18,391 [MainThread  ] [INFO ]  step 200, training accuracy 0.975 loss is 0.839575
+2017-08-29 00:46:33,482 [MainThread  ] [INFO ]  step 250, training accuracy 0.9825 loss is 0.796286
+2017-08-29 00:50:48,153 [MainThread  ] [INFO ]  step 300, training accuracy 0.99 loss is 0.766793
+2017-08-29 00:55:03,023 [MainThread  ] [INFO ]  step 350, training accuracy 0.98 loss is 0.762347
+2017-08-29 00:59:17,236 [MainThread  ] [INFO ]  step 400, training accuracy 0.9775 loss is 0.770723
+2017-08-29 01:03:36,624 [MainThread  ] [INFO ]  epoch 7 valid accuracy 0.9925
+2017-08-29 01:03:41,611 [MainThread  ] [INFO ]  step 0, training accuracy 0.9975 loss is 0.671225
+2017-08-29 01:07:55,737 [MainThread  ] [INFO ]  step 50, training accuracy 0.985 loss is 0.663309
+2017-08-29 01:12:09,741 [MainThread  ] [INFO ]  step 100, training accuracy 0.99 loss is 0.653926
+2017-08-29 01:16:23,890 [MainThread  ] [INFO ]  step 150, training accuracy 0.995 loss is 0.671253
+2017-08-29 01:20:39,162 [MainThread  ] [INFO ]  step 200, training accuracy 0.99 loss is 0.619544
+2017-08-29 01:24:53,453 [MainThread  ] [INFO ]  step 250, training accuracy 0.9825 loss is 0.614096
+2017-08-29 01:29:08,192 [MainThread  ] [INFO ]  step 300, training accuracy 0.995 loss is 0.650879
+2017-08-29 01:33:22,346 [MainThread  ] [INFO ]  step 350, training accuracy 0.9825 loss is 0.599174
+2017-08-29 01:37:36,182 [MainThread  ] [INFO ]  step 400, training accuracy 0.9975 loss is 0.557872
+2017-08-29 01:41:55,184 [MainThread  ] [INFO ]  epoch 8 valid accuracy 0.985
+2017-08-29 01:42:00,359 [MainThread  ] [INFO ]  step 0, training accuracy 0.985 loss is 0.555906
+2017-08-29 01:46:14,852 [MainThread  ] [INFO ]  step 50, training accuracy 0.995 loss is 0.543499
+2017-08-29 01:50:29,232 [MainThread  ] [INFO ]  step 100, training accuracy 0.99 loss is 0.510347
+2017-08-29 01:54:43,573 [MainThread  ] [INFO ]  step 150, training accuracy 0.9925 loss is 0.500451
+2017-08-29 01:58:58,719 [MainThread  ] [INFO ]  step 200, training accuracy 0.995 loss is 0.48353
+2017-08-29 02:03:12,422 [MainThread  ] [INFO ]  step 250, training accuracy 0.9925 loss is 0.483137
+2017-08-29 02:07:27,307 [MainThread  ] [INFO ]  step 300, training accuracy 0.99 loss is 0.50145
+2017-08-29 02:11:41,439 [MainThread  ] [INFO ]  step 350, training accuracy 0.9925 loss is 0.45733
+2017-08-29 02:15:55,970 [MainThread  ] [INFO ]  step 400, training accuracy 0.99 loss is 0.455219
+2017-08-29 02:20:15,281 [MainThread  ] [INFO ]  epoch 9 valid accuracy 0.985
