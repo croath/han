@@ -134,8 +134,8 @@ def main(_):
                   label = labels_val[i]
                   logit = logits_val[i]
 
-                  input_char = int_to_chinese(label.index(1))
-                  output_char = int_to_chinese(logit.index(1))
+                  input_char = int_to_chinese(label.tolist().index(1))
+                  output_char = int_to_chinese(logit.tolist().index(1))
 
                   match = True if input_char == output_char else False
                   log('Input: %s\tOuput: %s\t%r' %(input_char, output_char, match))
