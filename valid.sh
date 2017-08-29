@@ -5,4 +5,5 @@ nohup python3 cnn.py --data_dir=/home/liuzhenfu/training_data/positive_data/ \
  --charater_num=8877 \
  --batch_size=400 \
  --read_from_checkpoint=True \
+ --mode=test \
  > valid.txt 2>&1&
