@@ -13,9 +13,8 @@ def main(_):
     input_graph_def = graph.as_graph_def()
 
     with tf.Session() as sess:
-        saver = tf.train.Saver()
-
         ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
+        saver = tf.train.import_meta_graph(ckpt + '.meta')
         if ckpt:
             saver.restore(sess, ckpt)
 
