@@ -9,9 +9,6 @@ FLAGS = None
 def main(_):
     output_node_names = "fc2"
 
-    graph = tf.get_default_graph()
-    input_graph_def = graph.as_graph_def()
-
     session_config = tf.ConfigProto()
     session_config.gpu_options.per_process_gpu_memory_fraction = FLAGS.gpu_fraction
 
@@ -21,6 +18,9 @@ def main(_):
         if ckpt:
             saver.restore(sess, ckpt)
 
+        graph = tf.get_default_graph()
+        input_graph_def = graph.as_graph_def()
+        
         for node in input_graph_def.node:
             print(node.name, node.op, node.input)
 
