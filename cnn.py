@@ -41,7 +41,7 @@ def deepnn(top_k):
 
         flatten = slim.flatten(max_pool_7)
         fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 2048, activation_fn=tf.nn.relu, scope='fc1')
-        logits = slim.fully_connected(slim.dropout(fc1, keep_prob), FLAGS.charater_num, activation_fn=None, scope='fc2', name='output_logits')
+        logits = slim.fully_connected(slim.dropout(fc1, keep_prob), FLAGS.charater_num, activation_fn=None, scope='fc2')
 
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
         accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(tf.argmax(logits, 1), tf.int64), tf.argmax(labels, 1)), tf.float32))
