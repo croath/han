@@ -38,5 +38,6 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--checkpoint_dir', type=str, default='/Users/croath/Desktop/checkpoint/', help='Directory for stroing checkpoint')
   parser.add_argument('--model_dir', type=str, help='Directory to save model')
+  parser.add_argument('--gpu_fraction', type=float, help='GPU using percentage')
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
