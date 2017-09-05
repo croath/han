@@ -1,12 +1,12 @@
-mkdir -p /mnt/liuzhenfu/graphs/
-mkdir -p /mnt/liuzhenfu/checkpoints/
+mkdir -p /mnt/liuzhenfu/graphs_new/
+mkdir -p /mnt/liuzhenfu/checkpoints_new/
 
 nohup python3 cnn.py --data_dir=/home/liuzhenfu/training_data/positive_data/ \
  --valid_dir=/home/liuzhenfu/training_data/valid_data \
- --graph_dir=/mnt/liuzhenfu/graphs/ \
- --checkpoint_dir=/mnt/liuzhenfu/checkpoints/ \
+ --graph_dir=/mnt/liuzhenfu/graphs_new/ \
+ --checkpoint_dir=/mnt/liuzhenfu/checkpoints_new/ \
  --charater_num=8877 \
- --epoch_num=10 \
+ --epoch_num=15 \
  --batch_size=400 \
- --gpu_fraction=0.5 \
+ --gpu_fraction=1.0 \
  > output.txt 2>&1&

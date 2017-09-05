@@ -41,7 +41,7 @@ def deepnn(top_k):
 
         flatten = slim.flatten(max_pool_7)
         fc1 = slim.fully_connected(slim.dropout(flatten, keep_prob), 2048, activation_fn=tf.nn.relu, scope='fc1')
-        logits = slim.fully_connected(slim.dropout(fc1, keep_prob), FLAGS.charater_num, activation_fn=None, scope='fc2')
+        logits = slim.fully_connected(slim.dropout(fc1, keep_prob), FLAGS.charater_num, activation_fn=None, scope='fc2', name='output_logits')
 
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
         accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.cast(tf.argmax(logits, 1), tf.int64), tf.argmax(labels, 1)), tf.float32))
@@ -49,7 +49,7 @@ def deepnn(top_k):
         global_step = tf.get_variable("step", [], initializer=tf.constant_initializer(0.0), trainable=False)
         rate = tf.train.exponential_decay(1e-4, global_step, decay_steps=2000, decay_rate=0.99, staircase=True)
         train_op = tf.train.AdamOptimizer(rate).minimize(loss, global_step=global_step)
-        probabilities = tf.nn.softmax(logits)
+        probabilities = tf.nn.softmax(logits, name='output_prob')
 
         tf.summary.scalar('loss', loss)
         tf.summary.scalar('accuracy', accuracy)
