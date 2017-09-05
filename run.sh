@@ -8,5 +8,5 @@ nohup python3 cnn.py --data_dir=/home/liuzhenfu/training_data/positive_data/ \
  --charater_num=8877 \
  --epoch_num=15 \
  --batch_size=400 \
- --gpu_fraction=1.0 \
+ --gpu_fraction=0.95 \
  > output.txt 2>&1&
