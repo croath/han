@@ -12,11 +12,17 @@ def main(_):
     graph = tf.get_default_graph()
     input_graph_def = graph.as_graph_def()
 
-    with tf.Session() as sess:
+    session_config = tf.ConfigProto()
+    session_config.gpu_options.per_process_gpu_memory_fraction = FLAGS.gpu_fraction
+
+    with tf.Session(config=session_config) as sess:
         ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
         saver = tf.train.import_meta_graph(ckpt + '.meta')
         if ckpt:
             saver.restore(sess, ckpt)
+
+        for node in input_graph_def.node:
+            print(node.name, node.op, node.input)
 
         output_graph_def = graph_util.convert_variables_to_constants(
             sess, # The session is used to retrieve the weights
