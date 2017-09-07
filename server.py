@@ -54,6 +54,7 @@ if __name__ == '__main__':
         prob_list = []
 
         for result in y_out:
+            result = result.tolist()
             max_prob = max(result)
             max_index = result.index(max_prob)
             charater = int_to_chinese(label_list[max_index])
