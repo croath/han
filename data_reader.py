@@ -35,6 +35,11 @@ def extract_data(path):
     create_label_list(labels)
     return numpy.array(images), labels
 
+def create_label_list_from_file(path):
+    with open(path) as f:
+        result = list(map(int, f.read().splitlines()))
+    return result
+
 def create_label_list(labels):
     global unique_label_list
     if len(unique_label_list) == 0:
@@ -128,8 +133,7 @@ class DataSet(object):
 def read_data_sets(train_dir, labellist_path=None, seed=None):
     global unique_label_list
     if labellist_path != None and len(unique_label_list) == 0:
-        with open(labellist_path) as f:
-            unique_label_list = list(map(int, f.read().splitlines()))
+        unique_label_list = create_label_list_from_file(labellist_path)
 
     images, labels = extract_data(train_dir)
     options = dict(seed=seed)

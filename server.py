@@ -1,6 +1,8 @@
 import os
 import tensorflow as tf
 import argparse
+from data_reader import get_real_images
+from data_reader import create_label_list_from_file
 
 FLAGS = None
 
@@ -26,5 +28,17 @@ if __name__ == '__main__':
 
     graph = load_graph(FLAGS.model_path)
 
-    for op in graph.get_operations():
-        print(op.name)
+    # for op in graph.get_operations():
+    #     print(op.name)
+
+    x = graph.get_tensor_by_name('import/images:0')
+    y = graph.get_tensor_by_name('import/output_prob:0')
+
+    input_images = get_real_images(['/home/liuzhenfu/training_data/test_data/AaXiHe/uni7740_着.png'])
+
+    with tf.Session(graph=graph) as sess:
+
+        y_out = sess.run(y, feed_dict={
+            x: input_images
+        })
+        print(y_out)
