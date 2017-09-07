@@ -30,7 +30,7 @@ def main(_):
             output_node_names.split(",") # The output node names are used to select the usefull nodes
         )
 
-        with tf.gfile.GFile(FLAGS.model_dir.join('model.pb'), "wb") as f:
+        with tf.gfile.GFile(os.path.join(FLAGS.model_dir, 'model.pb'), "wb") as f:
             f.write(output_graph_def.SerializeToString())
         print("%d ops in the final graph." % len(output_graph_def.node))
 
