@@ -37,9 +37,9 @@ if __name__ == '__main__':
     # for op in graph.get_operations():
     #     print(op.name)
 
-    x = graph.get_tensor_by_name('import/images')
-    y = graph.get_tensor_by_name('import/output_prob')
-    keep_prob = graph.get_tensor_by_name('import/keep_prob')
+    x = graph.get_tensor_by_name('import/images:0')
+    y = graph.get_tensor_by_name('import/output_prob:0')
+    keep_prob = graph.get_tensor_by_name('import/keep_prob:0')
 
     input_images = get_real_images(['/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7740_着.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7701_省.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7707_眇.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7708_眈.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7740_着.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7701_省.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7707_眇.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7708_眈.png']).reshape([-1, 64, 64, 1])
 
