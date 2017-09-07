@@ -7,7 +7,7 @@ import os
 FLAGS = None
 
 def main(_):
-    output_node_names = "fc2"
+    output_node_names = "output_prob"
 
     session_config = tf.ConfigProto()
     session_config.gpu_options.per_process_gpu_memory_fraction = FLAGS.gpu_fraction
@@ -20,9 +20,9 @@ def main(_):
 
         graph = tf.get_default_graph()
         input_graph_def = graph.as_graph_def()
-        
-        for node in input_graph_def.node:
-            print(node.name, node.op, node.input)
+
+        # for node in input_graph_def.node:
+        #     print(node.name, node.op, node.input)
 
         output_graph_def = graph_util.convert_variables_to_constants(
             sess, # The session is used to retrieve the weights
