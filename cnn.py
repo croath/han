@@ -22,7 +22,9 @@ log_helper.initLogging('log/' + strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + '.log'
 FLAGS = None
 
 def deepnn(top_k):
-    batch_norm_params = {'is_training': True, 'decay': 0.9, 'updates_collections': None}
+    is_training = tf.placeholder(tf.bool, [], name='is_training')
+
+    batch_norm_params = {'is_training': is_training, 'decay': 0.9, 'updates_collections': None}
     with slim.arg_scope([slim.conv2d, slim.fully_connected], normalizer_fn=slim.batch_norm, normalizer_params=batch_norm_params):
         keep_prob = tf.placeholder(dtype=tf.float32, shape=[], name='keep_prob')
         images = tf.placeholder(dtype=tf.float32, shape=[None, 64, 64, 1], name='images')
@@ -69,7 +71,8 @@ def deepnn(top_k):
             'predicted_index_top_k': predicted_index_top_k,
             'predicted_val_top_k': predicted_val_top_k,
             'merged_summary_op': merged_summary_op,
-            'global_step': global_step}
+            'global_step': global_step,
+            'is_training': is_training}
 
 def main(_):
   valid_data = read_data_sets(FLAGS.valid_dir, FLAGS.labellist)
@@ -105,7 +108,7 @@ def main(_):
                   batch = train_data.next_batch(FLAGS.batch_size)
                 #   if i % (FLAGS.batch_size // 10) == 0:
                     #   train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
-                  _, loss_val, summary, step, acc = sess.run([d['train_op'], d['loss'], d['merged_summary_op'], d['global_step'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 0.5})
+                  _, loss_val, summary, step, acc = sess.run([d['train_op'], d['loss'], d['merged_summary_op'], d['global_step'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 0.5, d['is_training']: True})
                   train_writer.add_summary(summary, step)
                   if inside_step % 50 == 0:
                       log('step %d, training accuracy %g loss is %g'% (inside_step, acc, loss_val))
@@ -118,7 +121,7 @@ def main(_):
               valid_step = 0
               while not valid_data.epochs_completed:
                   batch = valid_data.next_batch(FLAGS.batch_size)
-                  _, acc_val = sess.run([ d['logits'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 1.0})
+                  _, acc_val = sess.run([ d['logits'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 1.0, d['is_training']: False})
                   valid_acc += acc_val
                   valid_step += 1
 
@@ -130,7 +133,7 @@ def main(_):
           valid_step = 0
           while not valid_data.epochs_completed:
               batch = valid_data.next_batch(FLAGS.batch_size)
-              labels_val, logits_val, acc_val = sess.run([d['labels'], d['logits'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 1.0})
+              labels_val, logits_val, acc_val = sess.run([d['labels'], d['logits'], d['accuracy']], feed_dict={d['images']: batch[0].reshape([-1, 64, 64, 1]), d['labels']: batch[1], d['keep_prob']: 1.0, d['is_training']: False})
               for i in range(0, len(labels_val)):
                   label = labels_val[i]
                   logit = logits_val[i]
