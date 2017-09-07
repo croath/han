@@ -33,12 +33,14 @@ if __name__ == '__main__':
 
     x = graph.get_tensor_by_name('import/images:0')
     y = graph.get_tensor_by_name('import/output_prob:0')
+    keep_prob = graph.get_tensor_by_name('import/keep_prob:0')
 
     input_images = get_real_images(['/home/liuzhenfu/training_data/test_data/AaXiHe/uni7740_着.png']).reshape([-1, 64, 64, 1])
 
     with tf.Session(graph=graph) as sess:
 
         y_out = sess.run(y, feed_dict={
-            x: input_images
+            x: input_images,
+            keep_prob: 1.0
         })
         print(y_out)
