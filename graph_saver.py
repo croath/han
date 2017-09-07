@@ -18,15 +18,30 @@ def main(_):
         if ckpt:
             saver.restore(sess, ckpt)
 
-        graph = tf.get_default_graph()
-        input_graph_def = graph.as_graph_def()
-
         # for node in input_graph_def.node:
         #     print(node.name, node.op, node.input)
 
+        # Retrieve the protobuf graph definition and fix the batch norm nodes
+        # Fix for bug of BN.
+        # Ref 1 Solution: https://github.com/davidsandberg/facenet/issues/161
+        # Ref 2 Official Issue: https://github.com/tensorflow/tensorflow/issues/3628
+        gd = sess.graph.as_graph_def()
+        for node in gd.node:
+            if node.op == 'RefSwitch':
+                node.op = 'Switch'
+                for index in xrange(len(node.input)):
+                    if 'moving_' in node.input[index]:
+                        node.input[index] = node.input[index] + '/read'
+            elif node.op == 'AssignSub':
+                node.op = 'Sub'
+                if 'use_locking' in node.attr: del node.attr['use_locking']
+            elif node.op == 'AssignAdd':
+                node.op = 'Add'
+                if 'use_locking' in node.attr: del node.attr['use_locking']
+
         output_graph_def = graph_util.convert_variables_to_constants(
             sess, # The session is used to retrieve the weights
-            input_graph_def, # The graph_def is used to retrieve the nodes
+            gd, # The graph_def is used to retrieve the nodes
             output_node_names.split(",") # The output node names are used to select the usefull nodes
         )
 
