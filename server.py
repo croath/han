@@ -59,7 +59,8 @@ if __name__ == '__main__':
             result = result.tolist()
             max_prob = max(result)
             max_index = result.index(max_prob)
-            charater = int_to_chinese(label_list[max_index])
+            # charater = int_to_chinese(label_list[max_index])
+            charater = label_list[max_index]
 
             chn_list.append(charater)
             prob_list.append(max_prob)
