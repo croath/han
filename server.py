@@ -50,6 +50,8 @@ if __name__ == '__main__':
             keep_prob: 1.0
         })
 
+        print(y_out)
+
         chn_list = []
         prob_list = []
 
