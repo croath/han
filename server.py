@@ -15,11 +15,7 @@ def load_graph(frozen_graph_filename):
     # current default Graph
     with tf.Graph().as_default() as graph:
         tf.import_graph_def(
-            graph_def,
-            input_map=None,
-            return_elements=None,
-            op_dict=None,
-            producer_op_list=None
+            graph_def
         )
     return graph
 
