@@ -3,7 +3,10 @@ import tensorflow as tf
 import argparse
 from data_reader import get_real_images
 from data_reader import create_label_list_from_file
+from chn_converter import int_to_chinese
+import numpy as np
 
+np.set_printoptions(threshold=np.inf)
 FLAGS = None
 
 def load_graph(frozen_graph_filename):
@@ -24,7 +27,10 @@ def load_graph(frozen_graph_filename):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str, default='/Users/croath/Desktop/models/model.pb', help='Directory for stroing checkpoint')
+    parser.add_argument('--labellist', type=str, default=None, help='Labels list')
     FLAGS, unparsed = parser.parse_known_args()
+
+    label_list = create_label_list_from_file(FLAGS.labellist)
 
     graph = load_graph(FLAGS.model_path)
 
@@ -43,4 +49,17 @@ if __name__ == '__main__':
             x: input_images,
             keep_prob: 1.0
         })
-        print(y_out)
+
+        chn_list = []
+        prob_list = []
+
+        for result in y_out:
+            max_prob = max(result)
+            max_index = result.index(max_prob)
+            charater = int_to_chinese(label_list[max_index])
+
+            chn_list.append(charater)
+            prob_list.append(max_prob)
+
+        print(chn_list)
+        print(prob_list)
