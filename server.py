@@ -1,12 +1,13 @@
 import os
 import tensorflow as tf
 import argparse
-from data_reader import get_real_images
+from data_reader import read_data_sets
 from data_reader import create_label_list_from_file
 from chn_converter import int_to_chinese
 import numpy as np
 
 np.set_printoptions(threshold=np.inf)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 FLAGS = None
 
 def load_graph(frozen_graph_filename):
@@ -28,9 +29,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str, default='/Users/croath/Desktop/models/model.pb', help='Directory for stroing checkpoint')
     parser.add_argument('--labellist', type=str, default=None, help='Labels list')
+    parser.add_argument('--test_dir', type=str, default=None, help='Where test images locate')
     FLAGS, unparsed = parser.parse_known_args()
 
     label_list = create_label_list_from_file(FLAGS.labellist)
+
+    test_data = read_data_sets(FLAGS.test_dir, FLAGS.labellist)
 
     graph = load_graph(FLAGS.model_path)
 
@@ -42,30 +46,30 @@ if __name__ == '__main__':
     keep_prob = graph.get_tensor_by_name('import/keep_prob:0')
     is_training = graph.get_tensor_by_name('import/is_training:0')
 
-    input_images = get_real_images(['/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7740_着.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7701_省.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7707_眇.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7708_眈.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7740_着.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7701_省.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7707_眇.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7708_眈.png']).reshape([-1, 64, 64, 1])
-
     with tf.Session(graph=graph) as sess:
+        error_dict = {}
 
-        y_out = sess.run(y, feed_dict={
-            x: input_images,
-            keep_prob: 1.0,
-            is_training: False
-        })
+        while not valid_data.epochs_completed:
+            batch = test_data.next_batch(FLAGS.batch_size)
+            input_images = batch[0].reshape([-1, 64, 64, 1])
+            input_labels = batch[1]
 
-        # print(y_out)
+            y_out = sess.run(y, feed_dict={
+                x: input_images,
+                keep_prob: 1.0,
+                is_training: False
+            })
 
-        chn_list = []
-        prob_list = []
+            for result in y_out:
+                result = result.tolist()
+                max_index = result.index(max(result))
 
-        for result in y_out:
-            result = result.tolist()
-            max_prob = max(result)
-            max_index = result.index(max_prob)
-            charater = int_to_chinese(label_list[max_index])
-            # charater = label_list[max_index]
+                labels = input_labels.tolist()
+                label_index = labels.index(max(labels))
 
-            chn_list.append(charater)
-            prob_list.append(max_prob)
+                if label_index != max_index:
+                    predict_character = int_to_chinese(label_list[max_index])
+                    label_character = int_to_chinese(label_list[label_index])
+                    error_dict[label_character] = predict_character
 
-        print(chn_list)
-        print(prob_list)
+        print(error_dict)
