@@ -127,7 +127,7 @@ class DataSet(object):
     else:
       self._index_in_epoch += batch_size
       end = self._index_in_epoch
-      return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end]), self._images[start:end])
+      return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end]), self._images[start:end]
 
 
 def read_data_sets(train_dir, labellist_path=None, seed=None):
