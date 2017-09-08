@@ -40,6 +40,7 @@ if __name__ == '__main__':
     x = graph.get_tensor_by_name('import/images:0')
     y = graph.get_tensor_by_name('import/output_prob:0')
     keep_prob = graph.get_tensor_by_name('import/keep_prob:0')
+    is_training = graph.get_tensor_by_name('import/is_training:0')
 
     input_images = get_real_images(['/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7740_着.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7701_省.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7707_眇.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7708_眈.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7740_着.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7701_省.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7707_眇.png', '/home/liuzhenfu/training_data/positive_data/AaBuYu/uni7708_眈.png']).reshape([-1, 64, 64, 1])
 
@@ -47,7 +48,8 @@ if __name__ == '__main__':
 
         y_out = sess.run(y, feed_dict={
             x: input_images,
-            keep_prob: 1.0
+            keep_prob: 1.0,
+            is_training: False
         })
 
         # print(y_out)
