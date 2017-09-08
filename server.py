@@ -60,12 +60,12 @@ if __name__ == '__main__':
                 is_training: False
             })
 
-            for result in y_out:
-                result = result.tolist()
+            for i in range(0, len(y_out)):
+                result = y_out[i].tolist()
                 max_index = result.index(max(result))
 
-                labels = input_labels.tolist()
-                label_index = labels.index(max(labels))
+                label = input_labels[i].tolist()
+                label_index = label.index(max(label))
 
                 if label_index != max_index:
                     predict_character = int_to_chinese(label_list[max_index])
