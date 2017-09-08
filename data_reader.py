@@ -123,11 +123,11 @@ class DataSet(object):
       end = self._index_in_epoch
       images_new_part = self._images[start:end]
       labels_new_part = self._labels[start:end]
-      return get_real_images(numpy.concatenate((images_rest_part, images_new_part), axis=0)) , dense_to_one_hot(numpy.concatenate((labels_rest_part, labels_new_part), axis=0))
+      return get_real_images(numpy.concatenate((images_rest_part, images_new_part), axis=0)) , dense_to_one_hot(numpy.concatenate((labels_rest_part, labels_new_part), axis=0)), numpy.concatenate((images_rest_part, images_new_part)
     else:
       self._index_in_epoch += batch_size
       end = self._index_in_epoch
-      return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end])
+      return get_real_images(self._images[start:end]), dense_to_one_hot(self._labels[start:end]), self._images[start:end])
 
 
 def read_data_sets(train_dir, labellist_path=None, seed=None):

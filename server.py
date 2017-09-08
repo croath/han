@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     label_list = create_label_list_from_file(FLAGS.labellist)
 
-    test_data = read_data_sets(FLAGS.test_dir, FLAGS.labellist)
+    test_data = read_data_sets(FLAGS.test_dir, FLAGS.labellist, test=True)
 
     graph = load_graph(FLAGS.model_path)
 
@@ -53,6 +53,7 @@ if __name__ == '__main__':
             batch = test_data.next_batch(100, shuffle=False)
             input_images = batch[0].reshape([-1, 64, 64, 1])
             input_labels = batch[1]
+            image_path = batch[2]
 
             y_out = sess.run(y, feed_dict={
                 x: input_images,
@@ -70,6 +71,6 @@ if __name__ == '__main__':
                 if label_index != max_index:
                     predict_character = int_to_chinese(label_list[max_index])
                     label_character = int_to_chinese(label_list[label_index])
-                    error_dict[label_character] = predict_character
+                    error_dict[image_path] = 'Label is ' + label_character + '. But it should be: ' + predict_character
 
-        print(error_dict)
+        print("\n".join("{} - {}".format(k, v) for k, v in error_dict.items()))
