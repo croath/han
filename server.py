@@ -50,7 +50,7 @@ if __name__ == '__main__':
         error_dict = {}
 
         while not test_data.epochs_completed:
-            batch = test_data.next_batch(FLAGS.batch_size)
+            batch = test_data.next_batch(100, shuffle=False)
             input_images = batch[0].reshape([-1, 64, 64, 1])
             input_labels = batch[1]
 
