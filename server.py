@@ -71,6 +71,6 @@ if __name__ == '__main__':
                 if label_index != max_index:
                     predict_character = int_to_chinese(label_list[max_index])
                     label_character = int_to_chinese(label_list[label_index])
-                    error_dict[image_path] = 'Label is ' + label_character + '. But it should be: ' + predict_character
+                    error_dict[image_path[i]] = 'Label is ' + label_character + '. But it should be: ' + predict_character
 
         print("\n".join("{} - {}".format(k, v) for k, v in error_dict.items()))
