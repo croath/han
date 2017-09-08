@@ -49,7 +49,7 @@ if __name__ == '__main__':
     with tf.Session(graph=graph) as sess:
         error_dict = {}
 
-        while not valid_data.epochs_completed:
+        while not test_data.epochs_completed:
             batch = test_data.next_batch(FLAGS.batch_size)
             input_images = batch[0].reshape([-1, 64, 64, 1])
             input_labels = batch[1]
