@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     label_list = create_label_list_from_file(FLAGS.labellist)
 
-    test_data = read_data_sets(FLAGS.test_dir, FLAGS.labellist, test=True)
+    test_data = read_data_sets(FLAGS.test_dir, FLAGS.labellist)
 
     graph = load_graph(FLAGS.model_path)
 
