@@ -11,6 +11,8 @@ As there are about 5,000+ most common characters in Chinese, and regular Chinese
 
 The project may not operate well on Chinese OCR purpose.
 
+Tech details can be found with PDF: https://drive.google.com/file/d/0B-noE_nG9ncQV2R2M2F0eW5kbk0/view?usp=sharing
+
 # How to use it
 
 The project is writen with Python 3.6.
