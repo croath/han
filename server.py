@@ -27,9 +27,9 @@ def load_graph(frozen_graph_filename):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type=str, default='/Users/croath/Desktop/models/model.pb', help='Directory for stroing checkpoint')
-    parser.add_argument('--labellist', type=str, default=None, help='Labels list')
-    parser.add_argument('--test_dir', type=str, default=None, help='Where test images locate')
+    parser.add_argument('--model_path', type=str, default='/Users/croath/Documents/model_opti.pb', help='Directory for stroing checkpoint')
+    parser.add_argument('--labellist', type=str, default='/Users/croath/Documents/labels.list', help='Labels list')
+    parser.add_argument('--test_dir', type=str, default='/Users/croath/Documents/nd', help='Where test images locate')
     FLAGS, unparsed = parser.parse_known_args()
 
     label_list = create_label_list_from_file(FLAGS.labellist)
