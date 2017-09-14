@@ -2,17 +2,17 @@ from skimage import io
 from skimage import filters
 import os
 import numpy
-from six.moves import xrange  # pylint: disable=redefined-builtin
 
-from tensorflow.contrib.learn.python.learn.datasets import base
 from tensorflow.python.framework import dtypes
 from tensorflow.python.framework import random_seed
 
 unique_label_list = []
 
+# Load real images instead of its' paths, it's very important to reduce memory.
 def get_real_images(paths):
     real_images = []
     for path in paths:
+        # Calculate a threshold to do image binarization, all colors at every pixel will be translated to number 0(white) or 1(black)
         camera = io.imread(path)
         val = filters.threshold_otsu(camera)
         result = (camera < val)*1.0
@@ -20,7 +20,6 @@ def get_real_images(paths):
     np_images = numpy.array(real_images)
     np_images = np_images.reshape(np_images.shape[0], np_images.shape[1] * np_images.shape[2])
     return np_images
-
 
 def extract_data(path):
     images = []
@@ -30,6 +29,7 @@ def extract_data(path):
             for filename in os.listdir(os.path.join(path, sub_dir)):
                 filefullname = os.path.join(path, sub_dir, filename)
                 images.append(filefullname)
+                # Get the int number of the unicode of chinese charaters
                 labels.append(int(filename.split('_')[0][3:], 16))
     labels = numpy.array(labels, dtype=numpy.uint32)
     create_label_list(labels)
@@ -42,6 +42,7 @@ def create_label_list_from_file(path):
 
 def create_label_list(labels):
     global unique_label_list
+    # Save the list into a local file for future using. (Onehot label should be made with a same standard)
     if len(unique_label_list) == 0:
         unique_label_list = sorted(list(set(labels)))
         with open('labels.list', 'w') as f:
@@ -90,6 +91,7 @@ class DataSet(object):
   def epochs_completed(self):
     return self._epochs_completed
 
+  # Function to restart to epoch, sometimes we really need to rerun the epoch.
   def restart_epoch(self):
       self._epochs_completed = 0
       self._index_in_epoch = 0

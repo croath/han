@@ -90,6 +90,7 @@ def main(_):
   with tf.Session(config=session_config) as sess:
       saver = tf.train.Saver()
 
+      # Load from checkpoints
       if FLAGS.read_from_checkpoint:
           ckpt = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
           if ckpt:
